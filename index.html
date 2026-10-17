@@ -230,6 +230,39 @@ section.block > h2, .page h2{font-size:1.5625rem;margin-bottom:4px;font-variatio
 .changes{font-size:1.25rem;line-height:1.35;margin:0 0 26px;color:var(--ink);font-weight:700}
 .album section + section{padding-top:30px}
 
+/* orders from the mint, on the album page: state by weight and ink only */
+.orders{padding-bottom:4px}
+.page .seg button{color:var(--ink-soft)}
+.page .seg button[aria-checked="true"]{color:var(--ink);font-weight:700}
+.page .search{background:var(--cream-deep);color:var(--ink)}
+.page .search::placeholder{color:var(--ink-soft)}
+.osum{font-size:1.3125rem;line-height:1.42;margin:8px 0 2px;color:var(--ink)}
+.osum b{font-family:var(--display);font-weight:700;font-variant-numeric:lining-nums tabular-nums}
+.orders h3{font-family:var(--display);font-weight:600;font-size:1.375rem;margin:28px 0 0;font-variation-settings:"opsz" 60}
+.orders .ctl{color:var(--ink-soft);font-size:1rem;margin:10px 0 -6px}
+.oyear{font-family:var(--display);font-weight:700;font-size:2.25rem;line-height:1;color:var(--post);margin:30px 0 4px;font-variant-numeric:lining-nums tabular-nums;font-variation-settings:"opsz" 144}
+.orow .n{color:var(--ink)}
+.orders details summary{list-style:none;cursor:pointer;min-height:var(--tap);display:block;font-family:var(--display);font-size:1.25rem;line-height:1.3;font-weight:500;color:var(--ink)}
+.orders details summary::-webkit-details-marker{display:none}
+.orders details[open] summary{font-weight:700}
+.orders details + details{margin-top:8px}
+.orders .full{color:var(--ink-soft);font-size:1rem;margin:0 0 4px}
+.orders .full a{color:var(--ink);font-weight:700;display:inline-flex;align-items:center;min-height:var(--tap)}
+.orow .st{font-size:1.0625rem;margin-top:2px;color:var(--ink)}
+.orow .st.done{color:var(--ink-soft)}
+.orow .st.open{font-weight:700;color:var(--post)}
+.orow .note{color:var(--ink-soft);font-size:1rem;font-style:italic;margin-top:2px}
+.orow a.trk{display:inline-flex;align-items:center;min-height:var(--tap);font-size:1.0625rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.orow.void .d,.orow.void .n,.orow.void summary,.orow.void .v,.orow.void .st{color:var(--ink-soft);font-weight:400}
+.orow.void .v{text-decoration:line-through;text-decoration-thickness:1px}
+.ogroup > .n{font-family:var(--display);font-size:1.3125rem;font-weight:600;line-height:1.28;padding-top:18px}
+.ogroup .times{color:var(--ink-soft);font-size:1rem}
+.ogroup ul{list-style:none;margin:0;padding:0}
+.ogroup .orow{padding:8px 0}
+.omsg{font-size:1.125rem;color:var(--ink);font-weight:700;margin:2px 0 6px}
+.extra .n{font-family:var(--display);font-size:1.25rem;line-height:1.3;font-weight:500}
+.extra button{min-height:var(--tap);color:var(--ink-soft);font-size:1.0625rem}
+
 footer{color:var(--felt-quiet);font-size:1rem;padding:30px 0 16px;line-height:1.55}
 footer p + p{margin-top:8px}
 
@@ -394,11 +427,30 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
       <div class="wrap">
         <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
         <div id="album-coins">
+          <section class="orders" id="orders-block" aria-labelledby="h-orders" hidden>
+            <h2 id="h-orders" data-t="ordersH">My orders from the Mint</h2>
+            <div class="seg" role="radiogroup" aria-label="Whose orders" id="oacct"></div>
+            <p class="osum" id="osum" aria-live="polite"></p>
+            <button type="button" class="more" id="omark" style="text-align:left" data-t="oMark">Mark every delivered coin as “I have it”</button>
+            <p class="omsg" id="omsg" aria-live="polite" hidden></p>
+            <h3 id="h-oopen" data-t="oOpenH">On the way</h3>
+            <ul class="rows" id="oopen"></ul>
+            <h3 id="h-oall" data-t="oAllH">Every order</h3>
+            <label for="oq" class="skip" data-t="oSearchLbl">Search my orders</label>
+            <input class="search" id="oq" type="search" autocomplete="off" data-p="oSearch" placeholder="Search a coin or tracking number">
+            <p class="ctl" id="ofilt-l" data-t="oShowL">Show</p>
+            <div class="seg" role="radiogroup" aria-labelledby="ofilt-l" id="ofilt"></div>
+            <p class="ctl" id="osort-l" data-t="oSortL">Arrange</p>
+            <div class="seg" role="radiogroup" aria-labelledby="osort-l" id="osort"></div>
+            <ul class="rows" id="olist"></ul>
+            <button type="button" class="more" id="omore" data-t="oMore">Show more orders</button>
+          </section>
           <p class="changes" id="want-changes" hidden></p>
           <section aria-labelledby="h-have">
             <h2 id="h-have" data-t="have">Coins I have</h2>
             <p class="total num" id="have-total"></p>
             <ul class="rows" id="have"></ul>
+            <ul class="rows" id="have-extra"></ul>
             <p class="empty" id="have-empty" data-t="haveEmpty">Nothing marked yet. On any coin, tap “I have it” and it appears here.</p>
           </section>
           <section aria-labelledby="h-want">
@@ -462,7 +514,20 @@ const T={
      repriced:(a,b)=>`Repriced from ₹${a} to ₹${b}`,backIn:"Back in stock",nowOut:"Sold out",stockDown:(a,b)=>`Stock down from ${a} to ${b}`,
      changed:n=>`${n} of your wanted ${n===1?"coin":"coins"} changed since you marked ${n===1?"it":"them"}.`,
      shows:"Shows and exhibitions",noShows:"No coin or stamp shows are listed right now. New ones appear here when they are announced.",
-     price:"price",ask:"Ask about this",askHint:"Ask the helper bot anything about a coin or stamp"},
+     price:"price",ask:"Ask about this",askHint:"Ask the helper bot anything about a coin or stamp",
+     ordersH:"My orders from the Mint",oMark:"Mark every delivered coin as “I have it”",oOpenH:"On the way",oAllH:"Every order",
+     oSearch:"Search a coin or tracking number",oSearchLbl:"Search my orders",oShowL:"Show",oSortL:"Arrange",oMore:"Show more orders",
+     oAcct:"Whose orders",fAll:"All",fOpen:"On the way",fDone:"Received",fVoid:"Cancelled",sName:"By coin name",sDate:"By date",
+     oSum:(who,me,n,since,v,open)=>`${me?"You have":who+" has"} bought <b>${n}</b> ${n===1?"coin":"coins"} from the Mint since ${since}, for <b>₹${v}</b>. ${open===0?"Nothing is on the way now.":`<b>${open}</b> ${open===1?"parcel is":"parcels are"} still on the way.`}`,
+     oNoOpen:"Nothing on the way. Orders from the last 90 days that are not yet delivered appear here.",
+     oNone:"No orders match.",oAge:n=>n===0?"ordered today":n===1?"1 day ago":`${n} days ago`,
+     oQty:n=>n===1?"1 coin":`${n} coins`,oTimes:n=>`bought ${n} times`,oOrder:id=>`Order ${id}`,
+     stDone:"Delivered",stSent:"Sent by post",stPack:"Being packed at the mint",stConf:"Order confirmed",stCancel:"Cancelled",stFail:"Payment failed",
+     stStale:"Store still says processing, probably delivered",
+     oTrack:n=>`India Post ${n}`,oTrackLbl:n=>`Track parcel ${n} on India Post. The number is copied, paste it there.`,
+     oCopied:n=>`Copied ${n}. Paste it on the India Post page.`,
+     oFull:"On the mint store",oMarked:n=>n?`${n} ${n===1?"coin":"coins"} added to Coins I have.`:"Every delivered coin is already in Coins I have.",
+     oFromOrders:"From your orders",oRemove:"Remove"},
  hi:{title:"संग्रह एल्बम",skip:"सीधे सामग्री पर जाएँ",mCoins:"सिक्के",mBoth:"दोनों",mStamps:"डाक टिकट",
      buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
      freshEmpty:"इस हफ़्ते कोई नया सिक्का नहीं। मिंट महीने में कुछ ही सिक्के निकालता है।",all:"मिंट स्टोर के सभी सिक्के",
@@ -494,7 +559,20 @@ const T={
      repriced:(a,b)=>`दाम ₹${a} से बदलकर ₹${b} हुआ`,backIn:"फिर से स्टॉक में",nowOut:"अब बिक गया",stockDown:(a,b)=>`स्टॉक ${a} से घटकर ${b}`,
      changed:n=>`आपके चाहे गए सिक्कों में से ${n} में निशान लगाने के बाद बदलाव हुआ है।`,
      shows:"प्रदर्शनियाँ और मेले",noShows:"अभी कोई सिक्का या डाक टिकट प्रदर्शनी सूची में नहीं है। घोषणा होते ही यहाँ दिखेगी।",
-     price:"दाम",ask:"इसके बारे में पूछें",askHint:"सिक्के या डाक टिकट के बारे में कुछ भी पूछें"}
+     price:"दाम",ask:"इसके बारे में पूछें",askHint:"सिक्के या डाक टिकट के बारे में कुछ भी पूछें",
+     ordersH:"टकसाल से मेरे ऑर्डर",oMark:"पहुँचे हुए सभी सिक्कों पर “मेरे पास है” लगाएँ",oOpenH:"रास्ते में",oAllH:"सभी ऑर्डर",
+     oSearch:"सिक्का या ट्रैकिंग नंबर खोजें",oSearchLbl:"मेरे ऑर्डर खोजें",oShowL:"दिखाएँ",oSortL:"क्रम",oMore:"और ऑर्डर दिखाएँ",
+     oAcct:"किसके ऑर्डर",fAll:"सभी",fOpen:"रास्ते में",fDone:"मिल गए",fVoid:"रद्द",sName:"सिक्के के नाम से",sDate:"तारीख से",
+     oSum:(who,me,n,since,v,open)=>`${me?"आपने":who+" ने"} ${since} से टकसाल से <b>${n}</b> सिक्के खरीदे, कुल <b>₹${v}</b>। ${open===0?"अभी कुछ रास्ते में नहीं है।":`<b>${open}</b> पार्सल अभी रास्ते में ${open===1?"है":"हैं"}।`}`,
+     oNoOpen:"अभी कुछ रास्ते में नहीं। पिछले 90 दिनों के जो ऑर्डर अभी नहीं पहुँचे, वे यहाँ दिखेंगे।",
+     oNone:"कोई ऑर्डर नहीं मिला।",oAge:n=>n===0?"आज ऑर्डर किया":`${n} दिन पहले`,
+     oQty:n=>n===1?"1 सिक्का":`${n} सिक्के`,oTimes:n=>`${n} बार खरीदा`,oOrder:id=>`ऑर्डर ${id}`,
+     stDone:"पहुँच गया",stSent:"डाक से भेजा गया",stPack:"मिंट में तैयार हो रहा है",stConf:"ऑर्डर पक्का",stCancel:"रद्द",stFail:"भुगतान नहीं हुआ",
+     stStale:"स्टोर पर अब भी प्रोसेसिंग लिखा है, शायद पहुँच गया",
+     oTrack:n=>`इंडिया पोस्ट ${n}`,oTrackLbl:n=>`पार्सल ${n} इंडिया पोस्ट पर देखें। नंबर कॉपी हो गया है, वहाँ पेस्ट करें।`,
+     oCopied:n=>`${n} कॉपी हो गया। इंडिया पोस्ट के पेज पर पेस्ट करें।`,
+     oFull:"मिंट स्टोर पर देखें",oMarked:n=>n?`${n} सिक्के “मेरे पास जो सिक्के हैं” में जोड़े गए।`:"पहुँचे हुए सभी सिक्के पहले से “मेरे पास है” में हैं।",
+     oFromOrders:"आपके ऑर्डर से",oRemove:"हटाएँ"}
 };
 function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
 const urlQ=new URLSearchParams(location.search), urlMode=(urlQ.get("mode")||"").toLowerCase(), urlLang=(urlQ.get("lang")||"").toLowerCase();
@@ -503,7 +581,8 @@ let mode=["coins","both","stamps"].includes(urlMode)?urlMode:(store("mode")||"bo
 /* marks: id -> {kind:"have"|"want", price, stock, inStock} taken when marked; older saves hold a bare string */
 const marks=(()=>{ const raw=store("marks"), m={}; if(raw&&typeof raw==="object") for(const id in raw){ const v=raw[id];
   if(typeof v==="string"&&(v==="have"||v==="want")) m[id]={kind:v,price:null,stock:null};
-  else if(v&&typeof v==="object"&&(v.kind==="have"||v.kind==="want")) m[id]={kind:v.kind,price:typeof v.price==="number"?v.price:null,stock:Number.isInteger(v.stock)?v.stock:null,inStock:typeof v.inStock==="boolean"?v.inStock:undefined}; }
+  else if(v&&typeof v==="object"&&(v.kind==="have"||v.kind==="want")) m[id]={kind:v.kind,price:typeof v.price==="number"?v.price:null,stock:Number.isInteger(v.stock)?v.stock:null,inStock:typeof v.inStock==="boolean"?v.inStock:undefined};
+  if(m[id]&&v&&typeof v==="object"&&typeof v.name==="string"){ m[id].name=v.name.slice(0,200); m[id].url=typeof v.url==="string"?v.url:""; } }
   return m; })();
 const kindOf=id=>marks[id]?marks[id].kind:null;
 
@@ -852,12 +931,100 @@ function render(){
   const have=coins.filter(c=>kindOf(c.id)==="have"), want=coins.filter(c=>kindOf(c.id)==="want");
   const wch=new Map(want.map(c=>[c.id,wantChanges(c)])), nch=want.filter(c=>wch.get(c.id).length).length;
   $("#want-changes").hidden=!nch; $("#want-changes").textContent=nch?t("changed")(nch):"";
-  $("#have").innerHTML=have.map(c=>coinRow(c,false)).join(""); $("#have-empty").hidden=have.length>0;
-  $("#have-total").textContent=have.length?t("total")(have.length,inr(have.reduce((s,c)=>s+c.price,0))):"";
+  const onStore=new Set(coins.map(c=>String(c.id)));
+  const extra=Object.keys(marks).filter(id=>marks[id].kind==="have"&&marks[id].name&&!onStore.has(id)).sort((a,b)=>marks[a].name.localeCompare(marks[b].name));
+  $("#have").innerHTML=have.map(c=>coinRow(c,false)).join(""); $("#have-empty").hidden=have.length+extra.length>0;
+  $("#have-extra").innerHTML=extra.map(id=>{ const m=marks[id]; return `<li class="srow extra"><p class="d"></p><div><p class="n">${esc(m.name)}</p><p class="v num">${typeof m.price==="number"?"₹"+inr(m.price)+", ":""}${esc(t("oFromOrders").toLowerCase())}</p><button type="button" data-unmark="${esc(id)}">${esc(t("oRemove"))}</button></div></li>`; }).join("");
+  const hn=have.length+extra.length, hv=have.reduce((s,c)=>s+c.price,0)+extra.reduce((s,id)=>s+(typeof marks[id].price==="number"?marks[id].price:0),0);
+  $("#have-total").textContent=hn?t("total")(hn,inr(hv)):"";
+  renderOrders();
   $("#want").innerHTML=want.map(c=>coinRow(c,false,{changes:wch.get(c.id)})).join(""); $("#want-empty").hidden=want.length>0;
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
   $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
 }
+/* ---- my orders from the Mint ---- */
+let oAcct=store("orderAcct")||"papa", oFilter="all", oSort=store("orderSort")||"name", oQuery="", oShown=40;
+const OPEN_ST=["Processing","Order Confirmed","Dispatched"], VOID_ST=["Cancelled","Failed"];
+const DAY=864e5, today0=()=>{ const d=new Date(); d.setHours(0,0,0,0); return d; };
+const ageDays=iso=>Math.max(0,Math.round((today0()-new Date(iso+"T00:00:00"))/DAY));
+/* Display rule only (raw status is kept): the mint store never moves most orders past "Processing", so an open
+   status older than 90 days is treated as received, and only the last 90 days count as "on the way". */
+function oClass(o){ if(VOID_ST.includes(o.status)) return "void"; if(OPEN_ST.includes(o.status)&&ageDays(o.date)<=90) return "open"; return "done"; }
+const stale=o=>o.status==="Processing"&&ageDays(o.date)>90;
+const delivered=o=>o.status==="Completed"||o.status==="Dispatched"||stale(o);
+function stWord(o){ const s=o.status; if(stale(o)) return t("stStale");
+  return s==="Completed"?t("stDone"):s==="Dispatched"?t("stSent"):s==="Processing"?t("stPack"):s==="Order Confirmed"?t("stConf"):s==="Failed"?t("stFail"):s==="Cancelled"?t("stCancel"):s; }
+const SMALL=new Set(["of","the","and","in","to","for","by","a","an","at","on"]);
+function tidy(s){ s=String(s||"").replace(/^\s*(proof|unc)\s*[-–:]\s*/i,"").replace(/\s*\(\s*\)\s*$/,"").replace(/\s+/g," ").trim();
+  /* shouted names (all capitals) are set in title case; short acronyms in a mixed name are left alone */
+  const L=s.replace(/[^A-Za-z]/g,""), cap=w=>w[0].toUpperCase()+w.slice(1);
+  if(L&&L.replace(/[^A-Z]/g,"").length/L.length>0.7) s=s.toLowerCase().replace(/\b[a-z][a-z'’]*/g,(w,i)=>i>0&&SMALL.has(w)?w:cap(w));
+  else s=s.replace(/\b[A-Z][A-Z'’]+(?:[\s,–-]+[A-Z][A-Z'’]+)+\b/g,ph=>ph.replace(/[^A-Za-z]/g,"").length<8?ph:ph.toLowerCase().replace(/\b[a-z][a-z'’]*/g,(w,i)=>i>0&&SMALL.has(w)?w:cap(w)));
+  return s; }
+const okey=s=>tidy(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const IP_TRACK="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx";
+const okTrk=n=>/^[A-Z]{2}\d{9}IN$/.test(n||"");
+function trkLinks(list){ return [...new Set(list.filter(okTrk))].map(n=>`<a class="trk" href="${IP_TRACK}" target="_blank" rel="noopener" data-trk="${n}" aria-label="${esc(t("oTrackLbl")(n))}">${esc(t("oTrack")(n))}</a>`).join(" "); }
+function acctList(){ return Array.isArray(data&&data.order_accounts)?data.order_accounts.filter(a=>a&&Array.isArray(a.orders)&&a.orders.length):[]; }
+function curAcct(){ const as=acctList(); return as.find(a=>a.key===oAcct)||as[0]||null; }
+function monthYear(iso){ const d=new Date(iso+"T00:00:00"); return isNaN(d)?iso:d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{month:"short",year:"numeric"}); }
+function dateFull(iso){ const d=new Date(iso+"T00:00:00"); return isNaN(d)?iso:d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+function seg(el,opts,cur){ el.innerHTML=opts.map(([v,l])=>`<button type="button" role="radio" aria-checked="${v===cur}" data-v="${esc(v)}">${esc(l)}</button>`).join(""); syncRadios(el); }
+function itemName(i){ return `<details><summary>${esc(tidy(i.short_title||i.product))}</summary><p class="full">${esc(i.product)}${i.product_url?`<br><a href="${esc(i.product_url)}" target="_blank" rel="noopener">${esc(t("oFull"))}</a>`:""}</p></details>`; }
+function itemLine(o,i,withName){
+  const k=oClass(o), price=typeof i.line_total==="number"?"₹"+inr(i.line_total):"";
+  const v=[i.finish&&i.finish.replace(/\//g,", "),t("oQty")(i.qty||1),price].filter(Boolean).join(", ");
+  const tr=trkLinks(i.tracking?[i.tracking]:(o.items.length===1?o.tracking:[]));
+  return `<li class="srow orow ${k}"><p class="d">${esc(withName?dateWords(o.date):dateFull(o.date))}</p><div>${withName?itemName(i):""}<p class="v num">${esc(v)}</p><p class="st ${k}">${esc(stWord(o))}${(o.items.length>1||!withName)?`, ${esc(t("oOrder")(o.id)).toLowerCase()}`:""}</p>${tr}</div></li>`; }
+function renderOrders(){
+  const as=acctList(); $("#orders-block").hidden=!as.length; if(!as.length) return;
+  const A=curAcct(); oAcct=A.key;
+  $("#oacct").hidden=as.length<2; $("#oacct").setAttribute("aria-label",t("oAcct"));
+  seg($("#oacct"),as.map(a=>[a.key,lang==="hi"&&a.label_hi?a.label_hi:a.label]),A.key);
+  seg($("#ofilt"),[["all",t("fAll")],["open",t("fOpen")],["done",t("fDone")],["void",t("fVoid")]],oFilter);
+  seg($("#osort"),[["name",t("sName")],["date",t("sDate")]],oSort);
+  const os=A.orders.slice().sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(+b.id)-(+a.id)), paid=os.filter(o=>oClass(o)!=="void");
+  const nCoins=paid.reduce((s,o)=>s+o.items.reduce((x,i)=>x+(i.qty||0),0),0), spent=paid.reduce((s,o)=>s+(o.total||0),0);
+  const open=os.filter(o=>oClass(o)==="open").reverse();   // oldest open first
+  const first=os.length?os[os.length-1].date:"";
+  $("#osum").innerHTML=t("oSum")(esc(lang==="hi"&&A.label_hi?A.label_hi:A.label),A.key==="papa",inr(nCoins),esc(monthYear(first)),inr(spent),open.length);
+  $("#oopen").innerHTML=open.map(o=>`<li class="srow orow open"><p class="d">${esc(dateWords(o.date))}</p><div>${o.items.map(i=>itemName(i)).join("")}<p class="v num">₹${inr(o.total||0)}, ${esc(t("oAge")(ageDays(o.date)))}</p><p class="st open">${esc(stWord(o))}</p>${trkLinks(o.tracking.concat(o.items.map(i=>i.tracking)))}</div></li>`).join("")||`<li class="empty">${esc(t("oNoOpen"))}</li>`;
+  const q=oQuery.trim().toLowerCase();
+  const hit=(o,i)=>!q||(i.short_title+" "+i.product+" "+tidy(i.short_title)+" "+o.id+" "+(i.tracking||"")+" "+o.tracking.join(" ")).toLowerCase().includes(q);
+  const rows=[]; os.forEach(o=>{ if(oFilter!=="all"&&oClass(o)!==oFilter) return; o.items.forEach(i=>{ if(hit(o,i)) rows.push([o,i]); }); });
+  let html="", total=0;
+  if(oSort==="name"){
+    const g=new Map(); rows.forEach(r=>{ const k=okey(r[1].short_title||r[1].product); if(!g.has(k)) g.set(k,[]); g.get(k).push(r); });
+    const keys=[...g.keys()].sort((a,b)=>a.localeCompare(b,"en",{numeric:true})); total=keys.length;
+    html=keys.slice(0,oShown).map(k=>{ const rs=g.get(k), i0=rs[0][1];
+      return `<li class="ogroup"><div class="n">${itemName(i0)}</div>${rs.length>1?`<p class="times">${esc(t("oTimes")(rs.length))}</p>`:""}<ul>${rs.map(([o,i])=>itemLine(o,i,false)).join("")}</ul></li>`; }).join("");
+  }else{
+    total=rows.length; let yr="";
+    rows.slice(0,oShown).forEach(([o,i])=>{ const y=o.date.slice(0,4); if(y!==yr){ yr=y; html+=`<li><h4 class="oyear">${esc(y)}</h4></li>`; } html+=itemLine(o,i,true); });
+  }
+  $("#olist").innerHTML=html||`<li class="empty">${esc(t("oNone"))}</li>`;
+  $("#omore").hidden=total<=oShown;
+}
+function onSeg(el,fn){ el.addEventListener("click",e=>{ const b=e.target.closest('[role="radio"]'); if(!b) return; fn(b.dataset.v); oShown=40; render();
+  const again=el.querySelector(`[data-v="${CSS.escape(b.dataset.v)}"]`); if(again) again.focus(); }); radioKeys(el); }
+onSeg($("#oacct"),v=>{ oAcct=v; store("orderAcct",v); $("#omsg").hidden=true; });
+onSeg($("#ofilt"),v=>{ oFilter=v; });
+onSeg($("#osort"),v=>{ oSort=v; store("orderSort",v); });
+$("#oq").oninput=e=>{ oQuery=e.target.value; oShown=40; renderOrders(); };
+$("#omore").onclick=()=>{ oShown+=40; renderOrders(); };
+document.addEventListener("click",e=>{ const a=e.target.closest("[data-trk]"); if(!a) return; const n=a.dataset.trk;
+  try{ if(navigator.clipboard) navigator.clipboard.writeText(n).catch(()=>{}); }catch(err){}
+  $("#omsg").textContent=t("oCopied")(n); $("#omsg").hidden=false; });
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-unmark]"); if(!b) return; delete marks[b.dataset.unmark]; store("marks",marks); render(); });
+$("#omark").onclick=()=>{
+  const A=curAcct(); if(!A) return; const byId=new Map((data.coins||[]).map(c=>[String(c.id),c])); let n=0;
+  A.orders.filter(delivered).forEach(o=>o.items.forEach(i=>{
+    const c=i.coin_id&&byId.get(String(i.coin_id));
+    if(c){ if(kindOf(c.id)!=="have"){ marks[c.id]={kind:"have",price:typeof c.price==="number"?c.price:null,stock:stockN(c),inStock:c.in_stock}; n++; } }
+    else{ const id="order:"+okey(i.short_title||i.product); if(!marks[id]){ marks[id]={kind:"have",price:typeof i.unit_price==="number"?i.unit_price:null,stock:null,name:tidy(i.short_title||i.product),url:i.product_url||""}; n++; } }
+  }));
+  store("marks",marks); render(); $("#omsg").textContent=t("oMarked")(n); $("#omsg").hidden=false;
+};
 $("#q").oninput=e=>{ query=e.target.value; shown=20; render(); };
 $("#more").onclick=()=>{ shown+=30; render(); };
 $("#stamps-more").onclick=()=>{ stampsShown+=20; render(); };
