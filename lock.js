@@ -85,18 +85,19 @@
     '.alock{max-width:22rem;margin:0 auto;padding:2.5rem 16px 2rem;text-align:center;color:var(--cream-text-on-baize,inherit);font-family:var(--body,inherit)}' +
     '.alock-line{font-family:var(--display,inherit);font-weight:600;font-size:1.625rem;line-height:1.2;color:var(--cream,inherit);margin:0 0 1.25rem;font-optical-sizing:auto}' +
     '.alock-pin{display:block;width:100%;max-width:15rem;margin:0 auto;min-height:4.5rem;padding:.25rem 0 .25rem .55em;border:0;border-radius:14px;' +
-      'background:var(--baize-deep,rgba(0,0,0,.25));color:var(--cream,inherit);font-family:var(--display,inherit);font-weight:600;font-size:2.75rem;' +
+      'background:rgba(0,0,0,.14);transition:background-color .15s;color:var(--cream,inherit);font-family:var(--display,inherit);font-weight:600;font-size:2.75rem;' +
       'letter-spacing:.55em;text-align:center;font-variant-numeric:tabular-nums lining-nums;caret-color:var(--brass,currentColor);-webkit-appearance:none;appearance:none}' +
     '.alock-pin::placeholder{color:var(--felt-quiet,currentColor);opacity:.55}' +
-    '.alock-pin:focus{outline:none}.alock-pin:focus-visible{outline:3px solid var(--brass,currentColor);outline-offset:4px}' +
+    '.alock-pin:focus,.alock-pin:focus-visible{outline:none;background:var(--baize-deep,rgba(0,0,0,.3))}' +  /* focus = the well deepens (tone), the brass caret blinks inside */
     '.alock-pin[readonly]{color:var(--felt-quiet,inherit)}' +
+    '@media (prefers-reduced-motion:reduce){.alock-pin{transition:none}}' +
     '.alock-msg{min-height:3.2em;margin:.9rem 0 .4rem;font-size:1.125rem;line-height:1.4;color:var(--felt-quiet,inherit)}' +
     '.alock-msg[data-kind="wrong"]{color:var(--cream,inherit);font-weight:700}' +
     '.alock-keep{display:inline-flex;align-items:center;gap:.75rem;min-height:var(--tap,48px);padding:0 .5rem;font-size:1.125rem;color:var(--cream-text-on-baize,inherit);cursor:pointer;text-align:left}' +
     '.alock-keep input{width:28px;height:28px;margin:0;flex-shrink:0;accent-color:var(--brass,auto)}' +
     '.alock-go{display:block;margin:1rem auto 0;min-height:var(--tap,48px);min-width:12rem;padding:0 1.25rem;border:0;border-radius:12px;background:transparent;' +
       'font:inherit;font-size:1.1875rem;font-weight:700;color:var(--brass-soft,inherit);cursor:pointer;-webkit-tap-highlight-color:transparent}' +
-    '.alock-go:active{background:var(--baize-deep,rgba(0,0,0,.2))}' +
+    '.alock-go:active,.alock-go:focus-visible{outline:none;background:var(--baize-deep,rgba(0,0,0,.2))}' +
     '.alock-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}';
 
   function injectStyle(doc) {
