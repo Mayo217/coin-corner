@@ -1,0 +1,15 @@
+{
+  "name": "Coin Album",
+  "short_name": "Coin Album",
+  "description": "New coins from the India Government Mint, coin and stamp news, and your own album.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F3EDE0",
+  "theme_color": "#F3EDE0",
+  "lang": "en",
+  "icons": [
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-1024.png", "sizes": "1024x1024", "type": "image/png"}
+  ]
+}
