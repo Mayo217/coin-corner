@@ -3,202 +3,319 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Coin Album</title>
-<meta name="description" content="New coins from the India Government Mint, coin and stamp news, and your own album.">
-<meta name="theme-color" content="#F3EDE0">
+<title>Collector's Album</title>
+<meta name="description" content="New coins from the India Government Mint, this year's India Post stamps, coin and stamp news, and your own album.">
+<meta name="theme-color" content="#1B3A30">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Coin Album">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-512.png">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Noto+Sans+Devanagari:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,400..800&family=Noto+Sans+Devanagari:wght@400;700&display=swap">
 <style>
+/* The collector's cabinet: green baize coin tray with brass fittings, and cream stamp-album pages laid on it. */
 :root{
-  --paper:#F3EDE0; --paper-deep:#E8DFCC; --ink:#1F1B16; --ink-soft:#5B5246; --ink-faint:#8C8275;
-  --gold:#B8891F; --gold-deep:#7A5A10; --silver:#A8A49A; --tray:#2F4A3E;
+  --baize:#1B3A30; --baize-deep:#122A22; --brass:#C9A227; --brass-soft:#E7CF7A;
+  --cream:#F4EBD3; --cream-deep:#E4D6B6; --ink:#1C1A16; --ink-soft:#5A5347; --post:#A63D2F;
+  --cream-text-on-baize:#F4EBD3;
+  --felt-quiet:#B4C2B2;           /* secondary text on baize, 7:1 */
   --body:"Atkinson Hyperlegible","Noto Sans Devanagari",-apple-system,"Helvetica Neue",Arial,sans-serif;
   --display:"Fraunces","Noto Sans Devanagari",Georgia,"Times New Roman",serif;
-  --tap:56px;
-}
-@media (prefers-color-scheme: dark){
-  :root{ --paper:#1C1915; --paper-deep:#272219; --ink:#F1EADB; --ink-soft:#C9BFAE; --ink-faint:#8F8676; --gold:#D4A63A; --gold-deep:#F0CC72; --silver:#7D7A72; --tray:#9BC1AF; }
+  --tap:48px;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:19px;line-height:1.45;
-  padding-bottom:calc(var(--tap) + 24px + env(safe-area-inset-bottom));}
-h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;line-height:1.15}
+html{-webkit-text-size-adjust:100%;background:var(--baize)}
+body{margin:0;background:var(--baize);color:var(--cream-text-on-baize);font-family:var(--body);font-size:19px;line-height:1.5;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;line-height:1.15;font-optical-sizing:auto}
 p{margin:0}
-a{color:inherit}
-button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-.num{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;font-weight:700}
-.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--paper);padding:10px 16px;z-index:50}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.num{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;font-weight:600}
+.skip{position:absolute;left:-999px;top:8px;background:var(--cream);color:var(--ink);padding:12px 18px;z-index:50;font-weight:700}
 .skip:focus{left:16px}
-:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.wrap{padding:0 16px;max-width:620px;margin:0 auto}
+:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:4px}
+.wrap{padding:0 16px;max-width:640px;margin:0 auto}
+[hidden]{display:none !important}
 
-header.top{padding:calc(14px + env(safe-area-inset-top)) 0 6px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-header.top h1{font-size:30px}
-.lang{display:flex;gap:4px;font-size:17px}
-.lang button{padding:10px 10px;color:var(--ink-faint);font-weight:400;min-height:44px}
-.lang button[aria-pressed="true"]{color:var(--ink);font-weight:700}
+/* header */
+header.top{padding:calc(18px + env(safe-area-inset-top)) 0 4px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+header.top h1{font-size:29px;font-weight:600;font-variation-settings:"opsz" 96;color:var(--cream);letter-spacing:-0.01em}
+.lang{display:flex;gap:2px;font-size:17px;flex-shrink:0}
+.lang button{padding:0 8px;min-height:var(--tap);color:var(--felt-quiet);font-weight:400}
+.lang button[aria-pressed="true"]{color:var(--cream);font-weight:700}
 
-.status{font-size:22px;line-height:1.3;margin:4px 0 14px;color:var(--ink)}
-.status b{color:var(--gold-deep);font-family:var(--display);font-weight:700}
-.status.quiet{color:var(--ink-soft)}
-.notice{font-size:18px;line-height:1.4;margin:0 0 14px;padding-left:14px;box-shadow:inset 3px 0 0 var(--gold)}
-.notice .lbl{color:var(--gold-deep);font-weight:700}
+/* the three-way switch */
+.mode{display:grid;grid-template-columns:1fr 1fr 1fr;margin:10px 0 8px}
+.mode button{min-height:58px;font-family:var(--display);font-size:22px;color:var(--felt-quiet);font-weight:400;font-variation-settings:"opsz" 48}
+.mode button[aria-checked="true"]{color:var(--brass-soft);font-weight:750;font-size:24px}
+.mode button:first-child{text-align:left}
+.mode button:last-child{text-align:right}
 
-/* the coin in hand */
-.hero{position:relative;margin:0 -16px;background:var(--paper-deep);padding:18px 16px 20px}
-.hero canvas{display:block;width:min(320px,78vw);height:min(320px,78vw);margin:0 auto}
-.hero .cap{margin-top:14px;text-align:center}
-.hero .cap h2{font-size:24px;margin-bottom:6px}
-.hero .cap .price{font-size:30px;color:var(--gold-deep)}
-.hero .cap .meta{color:var(--ink-soft);font-size:17px;margin-top:4px}
-.hero .tilt{display:block;margin:12px auto 0;color:var(--ink-soft);text-decoration:underline;text-underline-offset:4px;min-height:44px;font-size:17px}
-.hero .buy{display:inline-block;margin-top:14px;background:var(--ink);color:var(--paper);padding:14px 26px;border-radius:999px;font-weight:700;text-decoration:none;font-size:19px;min-height:var(--tap)}
+.status{font-size:21px;line-height:1.35;margin:6px 0 4px;color:var(--cream)}
+.status b{color:var(--brass-soft);font-family:var(--display);font-weight:700}
+.status .quiet{color:var(--felt-quiet)}
+.status .stampline{display:block;margin-top:8px;color:var(--cream)}
+.status .stampline b{color:var(--brass-soft)}
+.notice{font-size:18px;line-height:1.45;margin:12px 0 0;color:var(--cream)}
+.notice .lbl{color:var(--brass-soft);font-weight:700}
+.error{margin:16px 0;font-size:20px;color:var(--cream);font-weight:700}
 
-section.block{padding:22px 0 4px}
-section.block h2{font-size:21px;color:var(--ink-soft);font-weight:500;margin-bottom:6px}
-.seg{display:flex;gap:2px;overflow-x:auto;margin:6px 0 4px;-webkit-overflow-scrolling:touch}
-.seg button{padding:10px 9px;color:var(--ink-faint);white-space:nowrap;min-height:44px;font-size:16px}
-.seg button[aria-checked="true"]{color:var(--ink);font-weight:700}
-.search{width:100%;font:inherit;font-size:19px;padding:14px 16px;border:0;border-radius:14px;background:var(--paper-deep);color:var(--ink);margin:8px 0 4px;min-height:var(--tap)}
-.search::placeholder{color:var(--ink-faint)}
+/* coin tray (baize) */
+.tray{padding:12px 0 18px}
+.hero canvas{display:block;width:min(330px,84vw);height:auto;aspect-ratio:660/600;margin:6px auto 0;touch-action:pan-y}
+.hero .cap{text-align:center;margin-top:6px}
+.hero .lead{color:var(--felt-quiet);font-size:17px}
+.hero .cap h2{font-size:25px;font-weight:600;margin:6px 0 6px;color:var(--cream);font-variation-settings:"opsz" 72}
+.hero .price{font-size:36px;color:var(--brass);font-weight:650}
+.hero .meta{color:var(--felt-quiet);font-size:17px;margin-top:2px}
+.hero .buy{display:inline-flex;align-items:center;min-height:56px;margin-top:8px;padding:0 10px;color:var(--brass-soft);font-weight:700;font-size:21px}
+.hero .tilt{display:block;margin:0 auto;color:var(--felt-quiet);min-height:var(--tap);font-size:17px;padding:0 10px}
+
+section.block{padding:30px 0 6px}
+section.block > h2, .page h2{font-size:25px;margin-bottom:4px;font-variation-settings:"opsz" 72}
+.tray h2{color:var(--cream)}
+.seg{display:flex;flex-wrap:wrap;gap:0 20px;margin:8px 0 2px}
+.seg button{padding:0;color:var(--felt-quiet);min-height:var(--tap);font-size:18px}
+.seg button[aria-checked="true"]{color:var(--brass-soft);font-weight:700}
+.search{width:100%;font:inherit;font-size:19px;padding:0 16px;border:0;border-radius:10px;background:var(--baize-deep);color:var(--cream);margin:8px 0 6px;min-height:56px}
+.search::placeholder{color:var(--felt-quiet)}
 
 .rows{list-style:none;margin:0;padding:0}
-.row{display:grid;grid-template-columns:84px 1fr;gap:14px;padding:16px 0;align-items:start}
-.row + .row{padding-top:18px}
-.row img{width:84px;height:84px;object-fit:cover;border-radius:50%;background:var(--paper-deep)}
-.row .name{font-family:var(--display);font-weight:500;font-size:20px;line-height:1.25}
+.row{display:grid;grid-template-columns:78px 1fr;gap:16px;padding:18px 0;align-items:start}
+.row img.thumb{width:78px;height:78px;object-fit:cover;border-radius:50%;background:var(--cream-deep);box-shadow:0 6px 12px rgba(0,0,0,.35)}
+.row .name{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.28;color:var(--cream)}
 .row .name.fresh{font-weight:700}
-.row .new{color:var(--gold-deep);font-weight:700;font-size:16px}
-.row .price{font-size:23px;margin-top:4px;color:var(--ink)}
-.row .meta{color:var(--ink-soft);font-size:16px;margin-top:2px}
-.row .meta.out{color:var(--ink-faint);font-style:italic}
-.acts{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px}
-.acts a,.acts button{min-height:44px;display:inline-flex;align-items:center;font-size:17px;text-decoration:underline;text-underline-offset:4px;color:var(--ink-soft)}
-.acts a{color:var(--ink);font-weight:700}
-.acts button[aria-pressed="true"]{color:var(--gold-deep);font-weight:700;text-decoration:none}
-.more{width:100%;min-height:var(--tap);text-decoration:underline;text-underline-offset:4px;color:var(--ink-soft);font-size:18px;padding:12px 0 24px}
+.row .new{color:var(--brass-soft);font-weight:700;font-size:17px}
+.row .price{font-size:25px;margin-top:4px;color:var(--brass)}
+.row .meta{color:var(--felt-quiet);font-size:17px;margin-top:2px}
+.row .meta.out{font-style:italic}
+.acts{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:6px}
+.acts a{flex-basis:100%}
+.acts a,.acts button{min-height:var(--tap);display:inline-flex;align-items:center;font-size:18px;color:var(--felt-quiet)}
+.acts a{color:var(--cream);font-weight:700}
+.acts button[aria-pressed="true"]{color:var(--brass-soft);font-weight:700}
+.more{display:block;width:100%;min-height:56px;font-weight:700;font-size:19px;color:var(--brass-soft);margin:4px 0 8px}
+.empty{color:var(--felt-quiet);padding:12px 0 18px;font-size:18px}
 
-.news .row{grid-template-columns:1fr}
-.news .src{color:var(--ink-faint);font-size:16px}
-.news .title{font-size:20px;line-height:1.3;text-decoration:none;display:block;font-family:var(--display);font-weight:500}
-.news .title:active{color:var(--gold-deep)}
-.empty{color:var(--ink-soft);padding:14px 0 28px;font-size:18px}
-.videos .empty{padding:0 0 6px;font-size:16px}
-.videos .row{grid-template-columns:1fr}
-.videos a.v{display:block;text-decoration:none}
-.videos a.v img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--paper-deep);display:block}
-.videos .title{font-family:var(--display);font-weight:500;font-size:20px;line-height:1.3;margin-top:8px}
-.videos .src{color:var(--ink-faint);font-size:16px;margin-top:2px}
-nav.tabs button{font-size:16px}
-.total{font-size:20px;margin:4px 0 2px}
+/* the stamp on the felt */
+.stampstage{padding:34px 0 30px;display:flex;flex-direction:column;align-items:center}
+.stampstage .lead{color:var(--felt-quiet);font-size:17px;margin-bottom:16px;text-align:center}
+.stampwrap{position:relative;padding:0 22px 0 0;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4))}
+.stamp{width:288px;height:360px;padding:6px;
+  background:radial-gradient(circle at 6px 6px, transparent 3.7px, var(--cream-deep) 4.3px) 0 0/12px 12px}
+.stamp .face{background:var(--cream-deep);height:100%;display:flex;flex-direction:column;padding:16px 18px 14px;color:var(--ink)}
+.stamp .country{font-size:15px;color:var(--ink-soft);font-weight:700;letter-spacing:.02em}
+.stamp .country span{font-family:var(--display);font-weight:600}
+.stamp .sname{font-family:var(--display);font-weight:600;font-size:27px;line-height:1.16;margin:auto 0;padding-top:40px;font-variation-settings:"opsz" 96;color:var(--ink);padding-right:8px}
+.stamp .foot{display:flex;align-items:flex-end;justify-content:space-between}
+.stamp .denom{font-family:var(--display);font-variant-numeric:lining-nums tabular-nums;font-size:58px;line-height:1;font-weight:700;color:var(--ink);font-variation-settings:"opsz" 144}
+.stamp .denom small{font-size:17px;font-weight:500;margin-left:4px}
+.stamp .issue{font-size:15px;color:var(--ink-soft);text-align:right;line-height:1.3}
+.postmark{position:absolute;top:-10px;right:6px;width:124px;height:124px;transform:rotate(-13deg);mix-blend-mode:multiply;pointer-events:none}
+.postmark text{font-family:"Atkinson Hyperlegible",Arial,sans-serif;fill:var(--post)}
 
-footer{color:var(--ink-faint);font-size:15px;padding:30px 0 10px;line-height:1.5}
-footer a{color:var(--ink-soft)}
+/* the album page (cream) */
+.page{background:var(--cream);color:var(--ink);padding:30px 0 34px}
+.page .lead{color:var(--ink-soft);font-size:18px;margin:2px 0 6px}
+.page .empty{color:var(--ink-soft)}
+.page .more{color:var(--post)}
+.srow{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:14px 0;align-items:baseline}
+.srow .d{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;color:var(--post);font-weight:650;font-size:19px}
+.srow .d.newest{font-weight:800}
+.srow .n{font-family:var(--display);font-size:20px;line-height:1.3;font-weight:500}
+.srow .v{color:var(--ink-soft);font-size:17px;margin-top:2px}
+.srow .v b{color:var(--post)}
 
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--paper);display:flex;padding:6px 8px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -1px 0 var(--paper-deep)}
-nav.tabs button{flex:1;min-height:var(--tap);font-size:17px;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}
-nav.tabs button[aria-selected="true"]{color:var(--ink);font-weight:700}
+#news-coins-block:not([hidden]) + section{padding-top:30px}
+.nrow{padding:14px 0}
+.nrow .src{color:var(--ink-soft);font-size:16px}
+.nrow .src b{color:var(--post)}
+.nrow a{display:block;font-family:var(--display);font-weight:500;font-size:21px;line-height:1.3;color:var(--ink);min-height:var(--tap)}
+.nrow a:active{color:var(--post)}
+
+/* videos on the felt */
+.vids{padding:26px 0 10px}
+.vids h2{color:var(--cream);font-size:25px}
+.vids .lead{color:var(--felt-quiet);font-size:17px;margin:4px 0 8px}
+.vrow{padding:16px 0}
+.vrow a{display:block}
+.vrow img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--baize-deep);display:block;box-shadow:0 8px 16px rgba(0,0,0,.35)}
+.vrow .title{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.3;margin-top:10px;color:var(--cream)}
+.vrow .src{color:var(--felt-quiet);font-size:16px;margin-top:2px}
+
+/* my album page */
+.album .row .name{color:var(--ink)}
+.album .row .price{color:var(--ink)}
+.album .row .meta{color:var(--ink-soft)}
+.album .acts a{color:var(--ink)}
+.album .acts button{color:var(--ink-soft)}
+.album .acts button[aria-pressed="true"]{color:var(--post)}
+.album .row img.thumb{box-shadow:0 4px 10px rgba(28,26,22,.25)}
+.total{font-size:21px;margin:4px 0 2px;color:var(--ink)}
+.album section + section{padding-top:30px}
+
+footer{color:var(--felt-quiet);font-size:16px;padding:30px 0 16px;line-height:1.55}
+footer p + p{margin-top:8px}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--baize-deep);display:flex;padding:4px 6px calc(6px + env(safe-area-inset-bottom));z-index:20}
+nav.tabs button{flex:1;min-height:60px;font-size:17px;color:var(--felt-quiet);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
+nav.tabs button[aria-selected="true"]{color:var(--brass-soft);font-weight:700}
 nav.tabs button .hi{font-size:14px;font-weight:400}
-[hidden]{display:none !important}
-.error{background:var(--paper-deep);padding:16px;margin:12px 0;border-radius:14px;color:var(--ink)}
 @media (prefers-reduced-motion: reduce){ .hero .tilt{display:none} }
+@media (max-width:360px){ .stamp{width:264px;height:336px} .stamp .sname{font-size:24px} .mode button{font-size:19px} .mode button[aria-checked="true"]{font-size:21px} }
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main" data-t="skip">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <h1 data-t="title">Coin Album</h1>
+  <h1 data-t="title">Collector's Album</h1>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" id="lang-en" aria-pressed="true">English</button>
     <button type="button" id="lang-hi" aria-pressed="false" lang="hi">हिंदी</button>
   </div>
 </header>
+<div class="mode" role="radiogroup" aria-label="Show" id="mode">
+  <button type="button" role="radio" data-mode="coins" aria-checked="false" data-t="mCoins">Coins</button>
+  <button type="button" role="radio" data-mode="both" aria-checked="true" data-t="mBoth">Both</button>
+  <button type="button" role="radio" data-mode="stamps" aria-checked="false" data-t="mStamps">Stamps</button>
+</div>
+<p class="status" id="status" aria-live="polite">Loading the album.</p>
+<p id="error" class="error" hidden></p>
+<div id="notices" hidden></div>
+</div>
 
 <main id="main">
-  <p class="status" id="status" aria-live="polite">Loading the album…</p>
-  <div id="error" class="error" hidden></div>
-  <div id="notices" hidden></div>
+  <section id="panel-home" role="tabpanel" aria-labelledby="tab-home">
+    <div class="tray" id="home-coins">
+      <div class="wrap">
+        <div class="hero" id="hero" hidden>
+          <canvas id="coin" width="660" height="600" role="img" aria-label=""></canvas>
+          <div class="cap">
+            <p class="lead" data-t="newest">Newest on the mint store</p>
+            <h2 id="hero-name"></h2>
+            <p class="price num" id="hero-price"></p>
+            <p class="meta" id="hero-meta"></p>
+            <a class="buy" id="hero-buy" href="#" target="_blank" rel="noopener" data-t="buy">Buy on the mint site</a>
+            <button type="button" class="tilt" id="tilt" data-t="tilt">Tilt the phone to see the shine</button>
+          </div>
+        </div>
 
-  <section id="panel-coins" role="tabpanel" aria-labelledby="tab-coins">
-    <div class="hero" id="hero" hidden>
-      <canvas id="coin" width="640" height="640" role="img" aria-label=""></canvas>
-      <div class="cap">
-        <h2 id="hero-name"></h2>
-        <p class="price num" id="hero-price"></p>
-        <p class="meta" id="hero-meta"></p>
-        <a class="buy" id="hero-buy" href="#" target="_blank" rel="noopener" data-t="buy">Buy on the mint site</a>
-        <button type="button" class="tilt" id="tilt" data-t="tilt">Tilt the phone to see the shine</button>
+        <section class="block" aria-labelledby="h-fresh">
+          <h2 id="h-fresh" data-t="fresh">New this week</h2>
+          <ul class="rows" id="fresh"></ul>
+          <p class="empty" id="fresh-empty" hidden data-t="freshEmpty">No new coins this week. The mint usually lists a few a month.</p>
+        </section>
+
+        <section class="block" aria-labelledby="h-all">
+          <h2 id="h-all" data-t="all">All coins on the mint store</h2>
+          <div class="seg" role="radiogroup" aria-labelledby="h-all" id="mintseg"></div>
+          <label for="q" class="skip" data-t="searchLbl">Search coins</label>
+          <input class="search" id="q" type="search" autocomplete="off" data-p="search" placeholder="Search a coin, e.g. Tiger">
+          <ul class="rows" id="all"></ul>
+          <button type="button" class="more" id="more" data-t="more">Show more coins</button>
+        </section>
       </div>
     </div>
 
-    <section class="block" id="fresh-block">
-      <h2 data-t="fresh">New this week</h2>
-      <ul class="rows" id="fresh"></ul>
-      <p class="empty" id="fresh-empty" hidden data-t="freshEmpty">No new coins this week. The mint usually lists a few a month.</p>
-    </section>
-
-    <section class="block">
-      <h2 data-t="all">All coins on the mint store</h2>
-      <div class="seg" role="radiogroup" aria-label="Mint" id="mintseg"></div>
-      <input class="search" id="q" type="search" autocomplete="off" data-p="search" placeholder="Search a coin, e.g. Tiger">
-      <ul class="rows" id="all"></ul>
-      <button type="button" class="more" id="more" data-t="more">Show more coins</button>
-    </section>
+    <div id="home-stamps">
+      <div class="stampstage" id="stampstage" hidden>
+        <p class="lead" data-t="newStamp">Newest stamp from India Post</p>
+        <div class="stampwrap" id="stampfig" role="img" aria-label="">
+          <div class="stamp" aria-hidden="true">
+            <div class="face">
+              <p class="country"><span lang="hi">भारत</span> INDIA</p>
+              <p class="sname" id="st-name"></p>
+              <div class="foot">
+                <p class="denom" id="st-denom"></p>
+                <p class="issue" id="st-issue"></p>
+              </div>
+            </div>
+          </div>
+          <svg class="postmark" viewBox="0 0 132 132" aria-hidden="true">
+            <defs><path id="pm-arc" d="M 23 66 A 43 43 0 1 1 109 66"/><path id="pm-arc2" d="M 13 66 A 53 53 0 0 0 119 66"/></defs>
+            <circle cx="66" cy="66" r="60" fill="none" stroke="#A63D2F" stroke-width="3.5"/>
+            <circle cx="66" cy="66" r="37" fill="none" stroke="#A63D2F" stroke-width="1.6"/>
+            <text font-size="11.5" font-weight="700" letter-spacing="1.2"><textPath href="#pm-arc" startOffset="50%" text-anchor="middle" id="pm-top">India Post</textPath></text>
+            <text font-size="11.5" font-weight="700" letter-spacing="1"><textPath href="#pm-arc2" startOffset="50%" text-anchor="middle" id="pm-bottom">First day</textPath></text>
+            <text x="66" y="64" text-anchor="middle" font-size="19" font-weight="700" id="pm-day"></text>
+            <text x="66" y="84" text-anchor="middle" font-size="14" font-weight="700" id="pm-year"></text>
+          </svg>
+        </div>
+      </div>
+      <section class="page" aria-labelledby="h-stamps">
+        <div class="wrap">
+          <h2 id="h-stamps" data-t="stampsYear">New stamps this year</h2>
+          <p class="lead" id="stamps-lead"></p>
+          <ul class="rows" id="stamps"></ul>
+          <button type="button" class="more" id="stamps-more" data-t="moreStamps">Show more stamps</button>
+        </div>
+      </section>
+    </div>
   </section>
 
   <section id="panel-news" role="tabpanel" aria-labelledby="tab-news" hidden>
-    <section class="block news">
-      <h2 data-t="coinNews">Coin news</h2>
-      <ul class="rows" id="news-coins"></ul>
-    </section>
-    <section class="block news">
-      <h2 data-t="stampNews">Stamp news and the stamp club</h2>
-      <ul class="rows" id="news-stamps"></ul>
-    </section>
+    <div class="page news">
+      <div class="wrap">
+        <section id="news-coins-block" aria-labelledby="h-nc">
+          <h2 id="h-nc" data-t="coinNews">Coin news</h2>
+          <ul class="rows" id="news-coins"></ul>
+        </section>
+        <section id="news-stamps-block" aria-labelledby="h-ns">
+          <h2 id="h-ns" data-t="stampNews">Stamp news and the stamp club</h2>
+          <ul class="rows" id="news-stamps"></ul>
+        </section>
+      </div>
+    </div>
   </section>
 
   <section id="panel-videos" role="tabpanel" aria-labelledby="tab-videos" hidden>
-    <section class="block videos">
-      <h2 data-t="videos">New videos on coins and stamps</h2>
-      <p class="empty" id="videos-note" data-t="videosNote">Chosen channels only. Tap a picture to watch on YouTube.</p>
-      <ul class="rows" id="videos"></ul>
-    </section>
+    <div class="vids">
+      <div class="wrap">
+        <h2 id="h-vid"></h2>
+        <p class="lead" data-t="videosNote">Chosen channels only. Tap a picture to watch on YouTube.</p>
+        <ul class="rows" id="vidlist"></ul>
+      </div>
+    </div>
   </section>
 
   <section id="panel-album" role="tabpanel" aria-labelledby="tab-album" hidden>
-    <section class="block">
-      <h2 data-t="have">Coins I have</h2>
-      <p class="total num" id="have-total"></p>
-      <ul class="rows" id="have"></ul>
-      <p class="empty" id="have-empty" data-t="haveEmpty">Nothing marked yet. On any coin, tap “I have it” and it appears here.</p>
-    </section>
-    <section class="block">
-      <h2 data-t="want">Coins I want</h2>
-      <p class="total num" id="want-total"></p>
-      <ul class="rows" id="want"></ul>
-      <p class="empty" id="want-empty" data-t="wantEmpty">Nothing marked yet. Tap “I want it” on a coin to keep it here.</p>
-    </section>
+    <div class="page album">
+      <div class="wrap">
+        <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
+        <div id="album-coins">
+          <section aria-labelledby="h-have">
+            <h2 id="h-have" data-t="have">Coins I have</h2>
+            <p class="total num" id="have-total"></p>
+            <ul class="rows" id="have"></ul>
+            <p class="empty" id="have-empty" data-t="haveEmpty">Nothing marked yet. On any coin, tap “I have it” and it appears here.</p>
+          </section>
+          <section aria-labelledby="h-want">
+            <h2 id="h-want" data-t="want">Coins I want</h2>
+            <p class="total num" id="want-total"></p>
+            <ul class="rows" id="want"></ul>
+            <p class="empty" id="want-empty" data-t="wantEmpty">Nothing marked yet. Tap “I want it” on a coin to keep it here.</p>
+          </section>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <footer>
+  <footer class="wrap">
     <p id="updated"></p>
-    <p data-t="source">Coins come from indiagovtmint.in, the Government of India mint store. News comes from the Numismatics Collections and Rainbow Stamp Club blogs, the RBI, and the press. Prices include GST as the store shows them.</p>
+    <p data-t="source"></p>
     <p data-t="made">Made by Mayank for Papa.</p>
   </footer>
 </main>
-</div>
 
 <nav class="tabs" role="tablist" aria-label="Sections">
-  <button role="tab" id="tab-coins" aria-selected="true" aria-controls="panel-coins"><span data-t="tabCoins">Coins</span><span class="hi" lang="hi">सिक्के</span></button>
+  <button role="tab" id="tab-home" aria-selected="true" aria-controls="panel-home"><span data-t="tabHome">Home</span><span class="hi" lang="hi">होम</span></button>
   <button role="tab" id="tab-news" aria-selected="false" aria-controls="panel-news" tabindex="-1"><span data-t="tabNews">News</span><span class="hi" lang="hi">खबरें</span></button>
   <button role="tab" id="tab-videos" aria-selected="false" aria-controls="panel-videos" tabindex="-1"><span data-t="tabVideos">Videos</span><span class="hi" lang="hi">वीडियो</span></button>
   <button role="tab" id="tab-album" aria-selected="false" aria-controls="panel-album" tabindex="-1"><span data-t="tabAlbum">My album</span><span class="hi" lang="hi">मेरा एल्बम</span></button>
@@ -209,89 +326,153 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
 "use strict";
 const $=s=>document.querySelector(s);
 const T={
- en:{title:"Coin Album",buy:"Buy on the mint site",tilt:"Tilt the phone to see the shine",fresh:"New this week",
+ en:{title:"Collector's Album",skip:"Skip to content",mCoins:"Coins",mBoth:"Both",mStamps:"Stamps",
+     buy:"Buy on the mint site",tilt:"Tilt the phone to see the shine",fresh:"New this week",
      freshEmpty:"No new coins this week. The mint usually lists a few a month.",all:"All coins on the mint store",
-     more:"Show more coins",coinNews:"Coin news",stampNews:"Stamp news and the stamp club",have:"Coins I have",
+     more:"Show more coins",moreStamps:"Show more stamps",coinNews:"Coin news",stampNews:"Stamp news and the stamp club",have:"Coins I have",
      haveEmpty:"Nothing marked yet. On any coin, tap “I have it” and it appears here.",want:"Coins I want",
      wantEmpty:"Nothing marked yet. Tap “I want it” on a coin to keep it here.",
-     source:"Coins come from indiagovtmint.in, the Government of India mint store. News comes from the Numismatics Collections and Rainbow Stamp Club blogs, the RBI, and the press. Prices include GST as the store shows them.",
-     made:"Made by Mayank for Papa.",tabCoins:"Coins",tabNews:"News",tabAlbum:"My album",search:"Search a coin, e.g. Tiger",
+     albumStamps:"Your album keeps coins for now. Choose Coins or Both above to see them.",
+     source:"Coins come from indiagovtmint.in, the Government of India mint store, with prices including GST as the store shows them. The stamp list comes from Wikipedia's List of postage stamps of India. News comes from the Numismatics Collections and Rainbow Stamp Club blogs, the RBI, PIB and the press. Videos come from chosen channels.",
+     made:"Made by Mayank for Papa.",tabHome:"Home",tabNews:"News",tabVideos:"Videos",tabAlbum:"My album",
+     search:"Search a coin, e.g. Tiger",searchLbl:"Search coins",
      allMints:"All mints",haveIt:"I have it",wantIt:"I want it",inStock:"in stock",soldOut:"sold out",newWord:"New",
-     listed:"Listed",updated:"Updated",newest:"Newest on the mint store",
+     listed:"Listed",updated:"Updated",newest:"Newest on the mint store",newStamp:"Newest stamp from India Post",
+     stampsYear:"New stamps this year",each:"each",issueNo:n=>`Issue ${n}`,firstDay:"First day",
+     stampsLead:n=>`${n} ${n===1?"issue":"issues"} so far, newest first.`,
+     stampsLoading:"The list of this year's stamp issues is still loading. Here is the latest stamp news meanwhile.",
      s_new:n=>`<b>${n}</b> new ${n===1?"coin":"coins"} since you last looked.`,
      s_none:"Nothing new since you last looked.",s_first:n=>`<b>${n}</b> coins on the mint store today.`,
+     s_stamp:(name,d)=>`Latest stamp: <b>${name}</b>, ${d}.`,
      total:(n,v)=>`${n} ${n===1?"coin":"coins"}, worth ₹${v} at mint price`,
-     mintSays:"The mint says:",videos:"New videos on coins and stamps",videosNote:"Chosen channels only. Tap a picture to watch on YouTube.",tabVideos:"Videos",offline:"Could not load the latest list. Showing nothing until the connection is back."},
- hi:{title:"सिक्का एल्बम",buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
+     mintSays:"The mint says:",vidCoins:"New videos on coins",vidStamps:"New videos on stamps",vidBoth:"New videos on coins and stamps",
+     videosNote:"Chosen channels only. Tap a picture to watch on YouTube.",noVideos:"No new videos for this choice yet.",
+     noNews:"No news for this choice yet.",
+     stampFig:(name,v,d)=>`Stamp: ${name}, ${v}, issued ${d}`,
+     offline:"Could not load the latest list. Check the internet connection, then open the album again."},
+ hi:{title:"संग्रह एल्बम",skip:"सीधे सामग्री पर जाएँ",mCoins:"सिक्के",mBoth:"दोनों",mStamps:"डाक टिकट",
+     buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
      freshEmpty:"इस हफ़्ते कोई नया सिक्का नहीं। मिंट महीने में कुछ ही सिक्के निकालता है।",all:"मिंट स्टोर के सभी सिक्के",
-     more:"और सिक्के दिखाएँ",coinNews:"सिक्कों की खबरें",stampNews:"डाक टिकट की खबरें और स्टैम्प क्लब",have:"मेरे पास जो सिक्के हैं",
+     more:"और सिक्के दिखाएँ",moreStamps:"और डाक टिकट दिखाएँ",coinNews:"सिक्कों की खबरें",stampNews:"डाक टिकट की खबरें और स्टैम्प क्लब",have:"मेरे पास जो सिक्के हैं",
      haveEmpty:"अभी कुछ नहीं। किसी सिक्के पर “मेरे पास है” दबाएँ, वह यहाँ आ जाएगा।",want:"जो सिक्के मुझे चाहिए",
      wantEmpty:"अभी कुछ नहीं। किसी सिक्के पर “मुझे चाहिए” दबाएँ।",
-     source:"सिक्के भारत सरकार के मिंट स्टोर indiagovtmint.in से। खबरें Numismatics Collections और Rainbow Stamp Club ब्लॉग, RBI और अख़बारों से। दाम GST सहित, जैसे स्टोर दिखाता है।",
-     made:"मयंक ने पापा के लिए बनाया।",tabCoins:"सिक्के",tabNews:"खबरें",tabAlbum:"मेरा एल्बम",search:"सिक्का खोजें, जैसे Tiger",
+     albumStamps:"अभी एल्बम में सिक्के ही रखे जाते हैं। देखने के लिए ऊपर सिक्के या दोनों चुनें।",
+     source:"सिक्के भारत सरकार के मिंट स्टोर indiagovtmint.in से, दाम GST सहित जैसे स्टोर दिखाता है। डाक टिकटों की सूची Wikipedia की List of postage stamps of India से। खबरें Numismatics Collections और Rainbow Stamp Club ब्लॉग, RBI, PIB और अख़बारों से। वीडियो चुने हुए चैनलों से।",
+     made:"मयंक ने पापा के लिए बनाया।",tabHome:"होम",tabNews:"खबरें",tabVideos:"वीडियो",tabAlbum:"मेरा एल्बम",
+     search:"सिक्का खोजें, जैसे Tiger",searchLbl:"सिक्के खोजें",
      allMints:"सभी मिंट",haveIt:"मेरे पास है",wantIt:"मुझे चाहिए",inStock:"स्टॉक में",soldOut:"बिक गया",newWord:"नया",
-     listed:"सूची में आया",updated:"अपडेट",newest:"मिंट स्टोर पर सबसे नया",
+     listed:"सूची में आया",updated:"अपडेट",newest:"मिंट स्टोर पर सबसे नया",newStamp:"इंडिया पोस्ट का सबसे नया डाक टिकट",
+     stampsYear:"इस साल के नए डाक टिकट",each:"प्रत्येक",issueNo:n=>`अंक ${n}`,firstDay:"प्रथम दिवस",
+     stampsLead:n=>`अब तक ${n} टिकट, सबसे नया पहले।`,
+     stampsLoading:"इस साल के डाक टिकटों की सूची अभी आ रही है। तब तक डाक टिकट की ताज़ा खबरें।",
      s_new:n=>`पिछली बार के बाद <b>${n}</b> ${n===1?"नया सिक्का":"नए सिक्के"}।`,
      s_none:"पिछली बार के बाद कुछ नया नहीं।",s_first:n=>`आज मिंट स्टोर पर <b>${n}</b> सिक्के।`,
+     s_stamp:(name,d)=>`नया डाक टिकट: <b>${name}</b>, ${d}।`,
      total:(n,v)=>`${n} सिक्के, मिंट दाम पर ₹${v}`,
-     mintSays:"मिंट की सूचना:",videos:"सिक्कों और डाक टिकटों पर नए वीडियो",videosNote:"सिर्फ़ चुने हुए चैनल। तस्वीर दबाएँ, YouTube पर चलेगा।",tabVideos:"वीडियो",offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट आने पर फिर खुलेगी।"}
+     mintSays:"मिंट की सूचना:",vidCoins:"सिक्कों पर नए वीडियो",vidStamps:"डाक टिकटों पर नए वीडियो",vidBoth:"सिक्कों और डाक टिकटों पर नए वीडियो",
+     videosNote:"सिर्फ़ चुने हुए चैनल। तस्वीर दबाएँ, YouTube पर चलेगा।",noVideos:"इस चुनाव के लिए अभी कोई नया वीडियो नहीं।",
+     noNews:"इस चुनाव के लिए अभी कोई खबर नहीं।",
+     stampFig:(name,v,d)=>`डाक टिकट: ${name}, ${v}, ${d} को जारी`,
+     offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट देखें, फिर एल्बम दोबारा खोलें।"}
 };
-let lang=store("lang")||"en", data=null, mint="", query="", shown=20;
+function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
+const urlMode=(new URLSearchParams(location.search).get("mode")||"").toLowerCase();
+let lang=store("lang")||"en", data=null, mint="", query="", shown=20, stampsShown=10;
+let mode=["coins","both","stamps"].includes(urlMode)?urlMode:(store("mode")||"both");
 const marks=store("marks")||{};   // id -> "have" | "want"
 
-function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
 const t=k=>T[lang][k];
 const inr=v=>Math.round(v).toLocaleString("en-IN");
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function dateWords(iso){ if(!iso) return ""; const d=new Date(iso+"T00:00:00"); return d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{day:"numeric",month:"short"}); }
-function cleanName(n){ return n.replace(/\s*\|\s*/g,", ").replace(/-\s*Denomination/i," Denomination").replace(/\s+/g," ").trim(); }
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function dateWords(iso){ if(!iso) return ""; const d=new Date(iso+"T00:00:00"); if(isNaN(d)) return ""; return d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{day:"numeric",month:"short"}); }
+function cleanName(n){ return String(n||"").replace(/\s*\|\s*/g,", ").replace(/-\s*Denomination/i," Denomination").replace(/\s+/g," ").trim(); }
+const noEmoji=s=>String(s||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu,"").replace(/\s+/g," ").replace(/\s+([|,.])/g,"$1").trim();
+function denom(s){
+  s=String(s||""); const m=/(\d+)\s*p\b/i.exec(s); let v=s;
+  if(m){ const r=+m[1]/100; v="₹"+(Number.isInteger(r)?r:r.toFixed(2)); }
+  return {v, each:/each/i.test(s)};
+}
+const showCoins=()=>mode!=="stamps", showStamps=()=>mode!=="coins";
 
 function applyLang(){
   document.documentElement.lang=lang==="hi"?"hi":"en";
-  document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent=t(el.dataset.t); });
+  document.querySelectorAll("[data-t]").forEach(el=>{ const v=t(el.dataset.t); if(typeof v==="string") el.textContent=v; });
   document.querySelectorAll("[data-p]").forEach(el=>{ el.placeholder=t(el.dataset.p); });
   $("#lang-en").setAttribute("aria-pressed",lang==="en"); $("#lang-hi").setAttribute("aria-pressed",lang==="hi");
-  if(data) render();
+  $("#mode").setAttribute("aria-label",lang==="hi"?"क्या दिखाएँ":"Show");
+  if(data) render(); else $("#status").textContent=lang==="hi"?"एल्बम खुल रहा है।":"Loading the album.";
 }
 $("#lang-en").onclick=()=>{lang="en";store("lang",lang);applyLang();};
 $("#lang-hi").onclick=()=>{lang="hi";store("lang",lang);applyLang();};
+
+/* radio groups: roving focus, arrow keys move and select */
+function radioKeys(group){
+  group.addEventListener("keydown",e=>{
+    const k=e.key; if(!["ArrowRight","ArrowLeft","ArrowDown","ArrowUp","Home","End"].includes(k)) return;
+    const rs=[...group.querySelectorAll('[role="radio"]')]; let i=rs.indexOf(document.activeElement); if(i<0) return;
+    e.preventDefault();
+    i = k==="Home"?0 : k==="End"?rs.length-1 : (i+((k==="ArrowRight"||k==="ArrowDown")?1:rs.length-1))%rs.length;
+    rs[i].click(); const again=[...group.querySelectorAll('[role="radio"]')][i]; if(again) again.focus();
+  });
+}
+function syncRadios(group){ group.querySelectorAll('[role="radio"]').forEach(b=>{ b.tabIndex=b.getAttribute("aria-checked")==="true"?0:-1; }); }
+
+/* the three-way switch */
+const modeG=$("#mode");
+modeG.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ mode=b.dataset.mode; store("mode",mode); stampsShown=10; applyMode(); }; });
+radioKeys(modeG);
+function applyMode(){
+  modeG.querySelectorAll("button").forEach(b=>b.setAttribute("aria-checked",b.dataset.mode===mode));
+  syncRadios(modeG);
+  if(data) render();
+}
 
 /* tabs */
 const tabs=[...document.querySelectorAll('[role="tab"]')];
 function selectTab(i){
   tabs.forEach((b,j)=>{ const on=i===j; b.setAttribute("aria-selected",on); b.tabIndex=on?0:-1; $("#"+b.getAttribute("aria-controls")).hidden=!on; });
   store("tab",i); window.scrollTo({top:0});
+  if(i===0) drawCoin();
 }
 tabs.forEach((b,i)=>{ b.onclick=()=>selectTab(i); b.onkeydown=e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const n=(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length; selectTab(n); tabs[n].focus(); } }; });
+const HASH={"#home":0,"#coins":0,"#news":1,"#videos":2,"#album":3};
+window.addEventListener("hashchange",()=>{ if(HASH[location.hash]!==undefined) selectTab(HASH[location.hash]); });
 
-/* the coin: image struck into a disc, mirror field that sweeps with tilt */
+/* the coin: image struck into a brass disc lying on the felt; the shine and its shadow follow the tilt */
 const cv=$("#coin"), cx=cv.getContext("2d"), reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-let img=null, light={x:-0.4,y:-0.5}, target={x:-0.4,y:-0.5}, raf=0, lastFrame="";
+let img=null, light={x:-0.4,y:-0.5}, target={x:-0.4,y:-0.5}, raf=0;
 function drawCoin(){
-  const S=cv.width, c=S/2, r=S*0.44;
-  const css=getComputedStyle(document.documentElement);
-  cx.clearRect(0,0,S,S);
+  const S=cv.width, H=cv.height, c=S/2, cy=S*0.43, r=S*0.40;
+  cx.clearRect(0,0,S,H);
+  // felt shadow: a soft dark ellipse, pushed away from the light
+  cx.save(); cx.translate(c-light.x*r*0.14, cy+r*0.97); cx.scale(1,0.16);
+  const sh=cx.createRadialGradient(0,0,0,0,0,r*0.98);
+  sh.addColorStop(0,"rgba(5,14,10,0.62)"); sh.addColorStop(0.6,"rgba(5,14,10,0.3)"); sh.addColorStop(1,"rgba(5,14,10,0)");
+  cx.fillStyle=sh; cx.beginPath(); cx.arc(0,0,r*0.98,0,Math.PI*2); cx.fill(); cx.restore();
   // reeded edge
-  cx.save(); cx.translate(c,c);
-  for(let i=0;i<160;i++){ const a=i/160*Math.PI*2; const sh=0.55+0.45*Math.cos(a-Math.atan2(light.y,light.x)); cx.strokeStyle=`rgba(122,90,16,${(0.35+0.5*sh).toFixed(2)})`; cx.lineWidth=S*0.006; cx.beginPath(); cx.moveTo(Math.cos(a)*r*0.965,Math.sin(a)*r*0.965); cx.lineTo(Math.cos(a)*r,Math.sin(a)*r); cx.stroke(); }
+  cx.save(); cx.translate(c,cy);
+  const la=Math.atan2(light.y,light.x);
+  cx.fillStyle="#5E4A10"; cx.beginPath(); cx.arc(0,0,r,0,Math.PI*2); cx.fill();
+  for(let i=0;i<170;i++){ const a=i/170*Math.PI*2; const s=0.5+0.5*Math.cos(a-la); cx.strokeStyle=`rgba(231,207,122,${(0.25+0.65*s).toFixed(2)})`; cx.lineWidth=S*0.0055; cx.beginPath(); cx.moveTo(Math.cos(a)*r*0.962,Math.sin(a)*r*0.962); cx.lineTo(Math.cos(a)*r*0.995,Math.sin(a)*r*0.995); cx.stroke(); }
   cx.restore();
-  // rim
-  const rim=cx.createLinearGradient(c+light.x*r,c+light.y*r,c-light.x*r,c-light.y*r);
-  rim.addColorStop(0,"#F2D98A"); rim.addColorStop(0.5,"#B8891F"); rim.addColorStop(1,"#6E4F0E");
-  cx.fillStyle=rim; cx.beginPath(); cx.arc(c,c,r*0.965,0,Math.PI*2); cx.fill();
+  // brass rim
+  const rim=cx.createLinearGradient(c+light.x*r,cy+light.y*r,c-light.x*r,cy-light.y*r);
+  rim.addColorStop(0,"#F6E6A6"); rim.addColorStop(0.35,"#E7CF7A"); rim.addColorStop(0.62,"#C9A227"); rim.addColorStop(1,"#6B5312");
+  cx.fillStyle=rim; cx.beginPath(); cx.arc(c,cy,r*0.955,0,Math.PI*2); cx.fill();
   // field
-  cx.save(); cx.beginPath(); cx.arc(c,c,r*0.86,0,Math.PI*2); cx.clip();
-  cx.fillStyle=css.getPropertyValue("--paper-deep").trim()||"#E8DFCC"; cx.fillRect(0,0,S,S);
-  if(img){ const s=Math.max(S/img.naturalWidth,S/img.naturalHeight)*0.9; const w=img.naturalWidth*s,h=img.naturalHeight*s; cx.drawImage(img,c-w/2,c-h/2,w,h); }
-  // mirror sweep: a soft band of light that moves with the tilt
-  const gx=c+light.x*r*0.9, gy=c+light.y*r*0.9;
+  cx.save(); cx.beginPath(); cx.arc(c,cy,r*0.85,0,Math.PI*2); cx.clip();
+  cx.fillStyle="#E4D6B6"; cx.fillRect(0,0,S,S);
+  if(img){ const s=Math.max(S/img.naturalWidth,S/img.naturalHeight)*0.82; const w=img.naturalWidth*s,h=img.naturalHeight*s; cx.drawImage(img,c-w/2,cy-h/2,w,h); }
+  const gx=c+light.x*r*0.9, gy=cy+light.y*r*0.9;
   const g=cx.createRadialGradient(gx,gy,0,gx,gy,r*1.1);
-  g.addColorStop(0,"rgba(255,250,235,0.55)"); g.addColorStop(0.35,"rgba(255,245,220,0.18)"); g.addColorStop(1,"rgba(60,40,10,0.18)");
+  g.addColorStop(0,"rgba(255,248,225,0.5)"); g.addColorStop(0.35,"rgba(255,240,205,0.16)"); g.addColorStop(1,"rgba(40,28,6,0.22)");
   cx.fillStyle=g; cx.fillRect(0,0,S,S);
-  const band=cx.createLinearGradient(c-light.y*r,c+light.x*r,c+light.y*r,c-light.x*r);
-  band.addColorStop(0,"rgba(255,255,255,0)"); band.addColorStop(0.48,"rgba(255,255,255,0.22)"); band.addColorStop(0.52,"rgba(255,255,255,0.22)"); band.addColorStop(1,"rgba(255,255,255,0)");
+  const band=cx.createLinearGradient(c-light.y*r,cy+light.x*r,c+light.y*r,cy-light.x*r);
+  band.addColorStop(0,"rgba(255,255,255,0)"); band.addColorStop(0.48,"rgba(255,255,255,0.2)"); band.addColorStop(0.52,"rgba(255,255,255,0.2)"); band.addColorStop(1,"rgba(255,255,255,0)");
   cx.fillStyle=band; cx.fillRect(0,0,S,S);
   cx.restore();
+  // inner rim shadow, so the field sits below the rim
+  cx.save(); cx.beginPath(); cx.arc(c,cy,r*0.85,0,Math.PI*2); cx.lineWidth=S*0.008; cx.strokeStyle="rgba(70,52,10,0.55)"; cx.stroke(); cx.restore();
 }
 function tick(){
   raf=0;
@@ -299,7 +480,7 @@ function tick(){
   drawCoin();
   if(Math.abs(target.x-light.x)+Math.abs(target.y-light.y)>0.002 && !document.hidden) raf=requestAnimationFrame(tick);
 }
-function nudge(x,y){ target.x=Math.max(-0.9,Math.min(0.9,x)); target.y=Math.max(-0.9,Math.min(0.9,y)); if(!raf&&!reduce) raf=requestAnimationFrame(tick); else if(reduce) drawCoin(); }
+function nudge(x,y){ target.x=Math.max(-0.9,Math.min(0.9,x)); target.y=Math.max(-0.9,Math.min(0.9,y)); if(reduce){ light.x=target.x; light.y=target.y; drawCoin(); } else if(!raf) raf=requestAnimationFrame(tick); }
 cv.addEventListener("pointermove",e=>{ const b=cv.getBoundingClientRect(); nudge((e.clientX-b.left)/b.width*2-1,(e.clientY-b.top)/b.height*2-1); });
 function onTilt(e){ if(e.gamma==null) return; nudge(e.gamma/35,(e.beta-40)/35); }
 $("#tilt").onclick=async()=>{
@@ -309,22 +490,41 @@ $("#tilt").onclick=async()=>{
 if(typeof DeviceOrientationEvent!=="undefined" && !DeviceOrientationEvent.requestPermission){ window.addEventListener("deviceorientation",onTilt); $("#tilt").hidden=true; }
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ drawCoin(); load(); } });
 
+let heroId=null;
 function setHero(c){
   $("#hero").hidden=false;
   $("#hero-name").textContent=cleanName(c.name);
   $("#hero-price").textContent="₹"+inr(c.price);
-  $("#hero-meta").textContent=`${t("newest")}. ${c.mint||""}${c.first_seen?`, ${t("listed").toLowerCase()} ${dateWords(c.first_seen)}`:""}`;
+  $("#hero-meta").textContent=`${c.mint||""}${c.first_seen?`, ${t("listed").toLowerCase()} ${dateWords(c.first_seen)}`:""}`;
   $("#hero-buy").href=c.url;
   cv.setAttribute("aria-label",`${cleanName(c.name)}, ₹${inr(c.price)}`);
-  img=null; drawCoin();
-  if(c.image){ const i=new Image(); i.onload=()=>{ img=i; drawCoin(); }; i.src=c.image; }
+  if(heroId!==c.id){ heroId=c.id; img=null; if(c.image){ const i=new Image(); i.onload=()=>{ img=i; drawCoin(); }; i.src=c.image; } }
+  drawCoin();
+}
+
+/* the newest stamp, drawn */
+function setStamp(s){
+  const d=denom(s.denom), when=dateWords(s.date)||s.date_text||"";
+  const name=s.name||"";
+  $("#st-name").textContent=name;
+  $("#st-name").style.fontSize=name.length>70?"21px":name.length>45?"24px":"";
+  $("#st-denom").innerHTML=esc(d.v)+(d.each?`<small>${esc(t("each"))}</small>`:"");
+  $("#st-issue").textContent=s.n?t("issueNo")(s.n):"";
+  $("#pm-day").textContent=when;
+  $("#pm-year").textContent=(s.date||"").slice(0,4);
+  $("#pm-bottom").textContent=t("firstDay");
+  $("#stampfig").setAttribute("aria-label",t("stampFig")(name,d.v+(d.each?" "+t("each"):""),`${when} ${(s.date||"").slice(0,4)}`.trim()));
+}
+function stampRow(s,first){
+  const d=denom(s.denom);
+  return `<li class="srow"><p class="d${first?" newest":""}">${esc(dateWords(s.date)||s.date_text)}</p><div><p class="n">${esc(s.name)}</p><p class="v num">${esc(d.v)}${d.each?` ${esc(t("each"))}`:""}${first?`, <b>${esc(t("newWord").toLowerCase())}</b>`:""}</p></div></li>`;
 }
 
 /* rows */
 function coinRow(c,fresh){
   const m=marks[c.id]; const out=!c.in_stock;
   return `<li class="row" data-id="${esc(c.id)}">
-    <img src="${esc(c.thumb||c.image||"")}" alt="" loading="lazy" width="84" height="84">
+    <img class="thumb" src="${esc(c.thumb||c.image||"")}" alt="" loading="lazy" width="78" height="78">
     <div>
       ${fresh?`<p class="new">${t("newWord")} ${dateWords(c.first_seen)}</p>`:""}
       <p class="name${fresh?" fresh":""}">${esc(cleanName(c.name))}</p>
@@ -338,52 +538,89 @@ function coinRow(c,fresh){
     </div></li>`;
 }
 function newsRow(n){
-  return `<li class="row"><div><p class="src">${esc(n.source)}${n.date?`, ${dateWords(n.date)}`:""}</p><a class="title" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a></div></li>`;
+  return `<li class="nrow"><p class="src">${esc(n.source)}${n.date?`, ${esc(dateWords(n.date))}`:""}</p><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a></li>`;
+}
+function videoGroup(v){
+  if(v.group) return v.group;
+  const s=(v.title+" "+v.channel).toLowerCase(), st=/stamp|philatel|india post|डाक/.test(s), co=/coin|numism|सिक्क|mint/.test(s);
+  return st&&!co?"stamps":co&&!st?"coins":"both";
 }
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-mark]"); if(!b) return;
   const id=b.closest(".row").dataset.id, kind=b.dataset.mark;
   marks[id]=marks[id]===kind?undefined:kind; if(!marks[id]) delete marks[id];
   store("marks",marks); render();
+  const again=document.querySelector(`.row[data-id="${CSS.escape(id)}"] [data-mark="${kind}"]`); if(again) again.focus();
 });
 
 function render(){
-  const coins=data.coins, week=Date.now()-7*864e5;
+  const coins=data.coins||[], week=Date.now()-7*864e5, C=showCoins(), S=showStamps();
+  const stamps=Array.isArray(data.stamps)?data.stamps.filter(s=>s&&s.name):[];
+  const yr=String(new Date().getFullYear()), yearStamps=stamps.filter(s=>(s.date||"").slice(0,4)===yr), list=yearStamps.length?yearStamps:stamps;
   const fresh=coins.filter(c=>c.first_seen && new Date(c.first_seen)>=week && c.first_seen!==coins[coins.length-1].first_seen);
-  // status line: what changed since the last visit
+  // status line: what changed since the last visit, and the newest stamp
   const last=store("lastVisit"); const seeded=coins.length&&coins.every(c=>c.first_seen===coins[0].first_seen);
-  let n=last?coins.filter(c=>c.first_seen>last).length:0;
-  $("#status").innerHTML= !last||seeded ? t("s_first")(coins.length) : (n?t("s_new")(n):t("s_none"));
-  $("#status").classList.toggle("quiet",!!last&&!n&&!seeded);
-  const nts=data.notices||[]; $("#notices").hidden=!nts.length;
-  $("#notices").innerHTML=nts.map(n=>`<p class="notice"><span class="lbl">${t("mintSays")}</span> ${esc(n)}</p>`).join("");
-  if(coins[0]) setHero(coins[0]);
-  $("#fresh").innerHTML=fresh.slice(0,12).map(c=>coinRow(c,true)).join("");
-  $("#fresh-empty").hidden=fresh.length>0;
-  // mint segments
-  const mints=[""].concat(data.counts.mints||[]);
-  $("#mintseg").innerHTML=mints.map(m=>`<button type="button" role="radio" aria-checked="${m===mint}" data-mint="${esc(m)}">${m?esc(m.replace(" Mint","")):t("allMints")}</button>`).join("");
-  $("#mintseg").querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ mint=b.dataset.mint; shown=20; render(); }; });
-  const q=query.toLowerCase();
-  const list=coins.filter(c=>(!mint||c.mint===mint)&&(!q||c.name.toLowerCase().includes(q)));
-  $("#all").innerHTML=list.slice(0,shown).map(c=>coinRow(c,false)).join("");
-  $("#more").hidden=list.length<=shown;
+  const n=last?coins.filter(c=>c.first_seen>last).length:0;
+  let st="";
+  if(C) st= !last||seeded ? t("s_first")(coins.length) : (n?t("s_new")(n):`<span class="quiet">${t("s_none")}</span>`);
+  if(S&&list[0]) st+=`<span class="stampline">${t("s_stamp")(esc(list[0].name),esc(dateWords(list[0].date)||list[0].date_text))}</span>`;
+  $("#status").innerHTML=st;
+  const nts=data.notices||[]; $("#notices").hidden=!(nts.length&&C);
+  $("#notices").innerHTML=nts.map(x=>`<p class="notice"><span class="lbl">${t("mintSays")}</span> ${esc(x)}</p>`).join("");
+
+  // home: coins
+  $("#home-coins").hidden=!C;
+  if(C){
+    if(coins[0]) setHero(coins[0]);
+    $("#fresh").innerHTML=fresh.slice(0,12).map(c=>coinRow(c,true)).join("");
+    $("#fresh-empty").hidden=fresh.length>0;
+    const mints=[""].concat((data.counts&&data.counts.mints)||[]);
+    $("#mintseg").innerHTML=mints.map(m=>`<button type="button" role="radio" aria-checked="${m===mint}" data-mint="${esc(m)}">${m?esc(m.replace(" Mint","")):t("allMints")}</button>`).join("");
+    syncRadios($("#mintseg"));
+    $("#mintseg").querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ mint=b.dataset.mint; shown=20; render(); }; });
+    const q=query.toLowerCase();
+    const all=coins.filter(c=>(!mint||c.mint===mint)&&(!q||c.name.toLowerCase().includes(q)));
+    $("#all").innerHTML=all.slice(0,shown).map(c=>coinRow(c,false)).join("");
+    $("#more").hidden=all.length<=shown;
+  }
+  // home: stamps
+  $("#home-stamps").hidden=!S;
+  if(S){
+    const stampNews=(data.news||[]).filter(x=>x.group==="stamps");
+    $("#stampstage").hidden=!list.length;
+    if(list.length){
+      setStamp(list[0]);
+      $("#stamps-lead").textContent=t("stampsLead")(list.length);
+      $("#stamps").innerHTML=list.slice(0,stampsShown).map((s,i)=>stampRow(s,i===0)).join("");
+      $("#stamps-more").hidden=list.length<=stampsShown;
+    }else{
+      $("#stamps-lead").textContent=t("stampsLoading");
+      $("#stamps").innerHTML=stampNews.slice(0,6).map(newsRow).join("");
+      $("#stamps-more").hidden=true;
+    }
+  }
   // news
-  const nc=data.news.filter(n=>n.group==="coins"), ns=data.news.filter(n=>n.group==="stamps");
-  $("#news-coins").innerHTML=nc.map(newsRow).join("")||`<li class="empty">${t("freshEmpty")}</li>`;
-  $("#news-stamps").innerHTML=ns.map(newsRow).join("");
+  const nc=(data.news||[]).filter(x=>x.group!=="stamps"), ns=(data.news||[]).filter(x=>x.group==="stamps");
+  $("#news-coins-block").hidden=!C; $("#news-stamps-block").hidden=!S;
+  $("#news-coins").innerHTML=nc.map(newsRow).join("")||`<li class="empty">${t("noNews")}</li>`;
+  $("#news-stamps").innerHTML=ns.map(newsRow).join("")||`<li class="empty">${t("noNews")}</li>`;
   // videos
-  $("#videos").innerHTML=(data.videos||[]).map(v=>`<li class="row"><a class="v" href="${esc(v.link)}" target="_blank" rel="noopener"><img src="${esc(v.thumb)}" alt="" loading="lazy"><p class="title">${esc(v.title)}</p><p class="src">${esc(v.channel)}${v.date?`, ${dateWords(v.date)}`:""}</p></a></li>`).join("")||`<li class="empty">${t("freshEmpty")}</li>`;
+  $("#h-vid").textContent=t(mode==="coins"?"vidCoins":mode==="stamps"?"vidStamps":"vidBoth");
+  const vids=(data.videos||[]).filter(v=>{ const g=videoGroup(v); return g==="both"||mode==="both"||g===mode; });
+  $("#vidlist").innerHTML=vids.map(v=>`<li class="vrow"><a href="${esc(v.link)}" target="_blank" rel="noopener"><img src="${esc(v.thumb)}" alt="" loading="lazy" width="480" height="270"><p class="title">${esc(noEmoji(v.title))}</p><p class="src">${esc(v.channel)}${v.date?`, ${esc(dateWords(v.date))}`:""}</p></a></li>`).join("")||`<li class="empty">${t("noVideos")}</li>`;
   // album
+  $("#album-coins").hidden=!C; $("#album-stamps-note").hidden=C;
   const have=coins.filter(c=>marks[c.id]==="have"), want=coins.filter(c=>marks[c.id]==="want");
   $("#have").innerHTML=have.map(c=>coinRow(c,false)).join(""); $("#have-empty").hidden=have.length>0;
   $("#have-total").textContent=have.length?t("total")(have.length,inr(have.reduce((s,c)=>s+c.price,0))):"";
   $("#want").innerHTML=want.map(c=>coinRow(c,false)).join(""); $("#want-empty").hidden=want.length>0;
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
-  $("#updated").textContent=`${t("updated")} ${data.generated}`;
+  $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
 }
 $("#q").oninput=e=>{ query=e.target.value; shown=20; render(); };
 $("#more").onclick=()=>{ shown+=30; render(); };
+$("#stamps-more").onclick=()=>{ stampsShown+=20; render(); };
+radioKeys($("#mintseg"));
 
 async function load(){
   try{
@@ -393,8 +630,9 @@ async function load(){
     setTimeout(()=>store("lastVisit",new Date().toISOString().slice(0,10)),4000);
   }catch(err){ if(!data){ $("#status").textContent=""; $("#error").textContent=t("offline"); $("#error").hidden=false; } }
 }
-const hashTab={"#coins":0,"#news":1,"#videos":2,"#album":3}[location.hash];
-applyLang(); selectTab(hashTab!==undefined?hashTab:(store("tab")||0)); load();
+applyLang(); applyMode();
+const hashTab=HASH[location.hash];
+selectTab(hashTab!==undefined?hashTab:(store("tab")||0)); load();
 })();
 </script>
 </body>
