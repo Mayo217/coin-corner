@@ -13,6 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-512.png">
 <link rel="manifest" href="manifest.json">
+<script src="lock.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,400..800&family=Noto+Sans+Devanagari:wght@400;700&display=swap">
@@ -87,6 +88,7 @@ header.top h1{font-size:1.8125rem;font-weight:600;font-variation-settings:"opsz"
 .lang{display:flex;gap:2px;font-size:1.0625rem;flex-shrink:0}
 .lang button{padding:0 8px;min-height:var(--tap);color:var(--felt-quiet);font-weight:400}
 .lang button[aria-pressed="true"]{color:var(--cream);font-weight:700}
+.lockbtn{min-height:var(--tap);padding:0 8px;color:var(--felt-quiet);font-size:1.0625rem;margin-left:auto}
 
 /* tray colour: five discs of each material, the metal drawn as an inset ring; the chosen one is larger */
 .themes{display:flex;align-items:center;gap:0;margin:2px 0 0 -9px}
@@ -232,6 +234,7 @@ section.block > h2, .page h2{font-size:1.5625rem;margin-bottom:4px;font-variatio
 
 /* orders from the mint, on the album page: state by weight and ink only */
 .orders{padding-bottom:4px}
+#h-orders:focus{outline:none}
 .page .seg button{color:var(--ink-soft)}
 .page .seg button[aria-checked="true"]{color:var(--ink);font-weight:700}
 .page .search{background:var(--cream-deep);color:var(--ink)}
@@ -284,6 +287,7 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
       <button type="button" id="lang-en" aria-pressed="true">English</button>
       <button type="button" id="lang-hi" aria-pressed="false" lang="hi">हिंदी</button>
     </div>
+    <button type="button" class="lockbtn" id="lockbtn" hidden data-t="lockNow">Lock</button>
     <div class="tsize" role="group" aria-label="Text size" id="tsize">
       <button type="button" id="ts-normal" aria-pressed="true" aria-label="Normal text">A</button>
       <button type="button" id="ts-big" aria-pressed="false" aria-label="Larger text">A+</button>
@@ -423,7 +427,8 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
   </section>
 
   <section id="panel-album" role="tabpanel" aria-labelledby="tab-album" hidden>
-    <div class="page album">
+    <div id="album-gate" hidden></div>
+    <div class="page album" id="album-page">
       <div class="wrap">
         <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
         <div id="album-coins">
@@ -527,7 +532,7 @@ const T={
      oTrack:n=>`India Post ${n}`,oTrackLbl:n=>`Track parcel ${n} on India Post. The number is copied, paste it there.`,
      oCopied:n=>`Copied ${n}. Paste it on the India Post page.`,
      oFull:"On the mint store",oMarked:n=>n?`${n} ${n===1?"coin":"coins"} added to Coins I have.`:"Every delivered coin is already in Coins I have.",
-     oFromOrders:"From your orders",oRemove:"Remove"},
+     oFromOrders:"From your orders",oRemove:"Remove",lockNow:"Lock"},
  hi:{title:"संग्रह एल्बम",skip:"सीधे सामग्री पर जाएँ",mCoins:"सिक्के",mBoth:"दोनों",mStamps:"डाक टिकट",
      buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
      freshEmpty:"इस हफ़्ते कोई नया सिक्का नहीं। मिंट महीने में कुछ ही सिक्के निकालता है।",all:"मिंट स्टोर के सभी सिक्के",
@@ -572,7 +577,7 @@ const T={
      oTrack:n=>`इंडिया पोस्ट ${n}`,oTrackLbl:n=>`पार्सल ${n} इंडिया पोस्ट पर देखें। नंबर कॉपी हो गया है, वहाँ पेस्ट करें।`,
      oCopied:n=>`${n} कॉपी हो गया। इंडिया पोस्ट के पेज पर पेस्ट करें।`,
      oFull:"मिंट स्टोर पर देखें",oMarked:n=>n?`${n} सिक्के “मेरे पास जो सिक्के हैं” में जोड़े गए।`:"पहुँचे हुए सभी सिक्के पहले से “मेरे पास है” में हैं।",
-     oFromOrders:"आपके ऑर्डर से",oRemove:"हटाएँ"}
+     oFromOrders:"आपके ऑर्डर से",oRemove:"हटाएँ",lockNow:"लॉक करें"}
 };
 function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
 const urlQ=new URLSearchParams(location.search), urlMode=(urlQ.get("mode")||"").toLowerCase(), urlLang=(urlQ.get("lang")||"").toLowerCase();
@@ -926,7 +931,8 @@ function render(){
   $("#h-vid").textContent=t(mode==="coins"?"vidCoins":mode==="stamps"?"vidStamps":"vidBoth");
   const vids=(data.videos||[]).filter(v=>{ const g=videoGroup(v); return g==="both"||mode==="both"||g===mode; });
   $("#vidlist").innerHTML=vids.map(v=>`<li class="vrow"><a href="${esc(v.link)}" target="_blank" rel="noopener"><img src="${esc(v.thumb)}" alt="" loading="lazy" width="480" height="270"><p class="title">${esc(noEmoji(v.title))}</p><p class="src">${esc(v.channel)}${v.date?`, ${esc(dateWords(v.date))}`:""}</p></a></li>`).join("")||`<li class="empty">${t("noVideos")}</li>`;
-  // album
+  // album: only after the album code
+  openLocked(); syncGate();
   $("#album-coins").hidden=!C; $("#album-stamps-note").hidden=C;
   const have=coins.filter(c=>kindOf(c.id)==="have"), want=coins.filter(c=>kindOf(c.id)==="want");
   const wch=new Map(want.map(c=>[c.id,wantChanges(c)])), nch=want.filter(c=>wch.get(c.id).length).length;
@@ -942,6 +948,28 @@ function render(){
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
   $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
 }
+/* ---- album code: orders and My album open only after the code (site/lock.js, AES-GCM in data.json "locked") ---- */
+let secret=null, gateLang=null, gate=null, lockedCt=null, tryingCached=false;
+const AL=window.AlbumLock||null;
+function isLocked(){ return !!(data&&data.locked)&&!secret; }
+function openLocked(){
+  if(!data||!data.locked){ secret=null; lockedCt=null; return; }
+  if(lockedCt===data.locked.ct&&(secret||tryingCached)) return;
+  const raw=AL&&AL.cached();
+  if(lockedCt!==data.locked.ct) secret=null;
+  lockedCt=data.locked.ct;
+  if(raw&&AL){ tryingCached=true; AL.unlockWithRaw(data.locked,raw).then(o=>{ secret=o; tryingCached=false; render(); },()=>{ AL.forget(); tryingCached=false; render(); }); }
+}
+function syncGate(){
+  const locked=isLocked(), el=$("#album-gate");
+  $("#album-page").hidden=locked; el.hidden=!locked||tryingCached; $("#lockbtn").hidden=!(data&&data.locked&&secret);
+  if(!locked||tryingCached||!AL){ if(gate){ gate.destroy(); gate=null; gateLang=null; } return; }
+  if(gate&&gateLang===lang) return;
+  if(gate) gate.destroy();
+  gateLang=lang; gate=AL.mountGate(el,{lang,locked:data.locked,onUnlock:o=>{ secret=o; gate=null; gateLang=null; render(); const h=$("#h-orders"); if(h){ h.tabIndex=-1; h.focus(); } }});
+}
+$("#lockbtn").onclick=()=>{ if(AL) AL.forget(); secret=null; render(); $("#lang-en").focus(); };
+
 /* ---- my orders from the Mint ---- */
 let oAcct=store("orderAcct")||"papa", oFilter="all", oSort=store("orderSort")||"name", oQuery="", oShown=40;
 const OPEN_ST=["Processing","Order Confirmed","Dispatched"], VOID_ST=["Cancelled","Failed"];
@@ -965,7 +993,7 @@ const okey=s=>tidy(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const IP_TRACK="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx";
 const okTrk=n=>/^[A-Z]{2}\d{9}IN$/.test(n||"");
 function trkLinks(list){ return [...new Set(list.filter(okTrk))].map(n=>`<a class="trk" href="${IP_TRACK}" target="_blank" rel="noopener" data-trk="${n}" aria-label="${esc(t("oTrackLbl")(n))}">${esc(t("oTrack")(n))}</a>`).join(" "); }
-function acctList(){ return Array.isArray(data&&data.order_accounts)?data.order_accounts.filter(a=>a&&Array.isArray(a.orders)&&a.orders.length):[]; }
+function acctList(){ return Array.isArray(secret&&secret.order_accounts)?secret.order_accounts.filter(a=>a&&Array.isArray(a.orders)&&a.orders.length):[]; }
 function curAcct(){ const as=acctList(); return as.find(a=>a.key===oAcct)||as[0]||null; }
 function monthYear(iso){ const d=new Date(iso+"T00:00:00"); return isNaN(d)?iso:d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{month:"short",year:"numeric"}); }
 function dateFull(iso){ const d=new Date(iso+"T00:00:00"); return isNaN(d)?iso:d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{day:"numeric",month:"short",year:"numeric"}); }
