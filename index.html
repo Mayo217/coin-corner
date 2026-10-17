@@ -63,7 +63,7 @@ header.top h1{font-size:30px}
 section.block{padding:22px 0 4px}
 section.block h2{font-size:21px;color:var(--ink-soft);font-weight:500;margin-bottom:6px}
 .seg{display:flex;gap:2px;overflow-x:auto;margin:6px 0 4px;-webkit-overflow-scrolling:touch}
-.seg button{padding:10px 12px;color:var(--ink-faint);white-space:nowrap;min-height:44px;font-size:17px}
+.seg button{padding:10px 9px;color:var(--ink-faint);white-space:nowrap;min-height:44px;font-size:16px}
 .seg button[aria-checked="true"]{color:var(--ink);font-weight:700}
 .search{width:100%;font:inherit;font-size:19px;padding:14px 16px;border:0;border-radius:14px;background:var(--paper-deep);color:var(--ink);margin:8px 0 4px;min-height:var(--tap)}
 .search::placeholder{color:var(--ink-faint)}
@@ -271,8 +271,6 @@ function drawCoin(){
   band.addColorStop(0,"rgba(255,255,255,0)"); band.addColorStop(0.48,"rgba(255,255,255,0.22)"); band.addColorStop(0.52,"rgba(255,255,255,0.22)"); band.addColorStop(1,"rgba(255,255,255,0)");
   cx.fillStyle=band; cx.fillRect(0,0,S,S);
   cx.restore();
-  // inner frosted ring
-  cx.strokeStyle="rgba(255,240,200,0.55)"; cx.lineWidth=S*0.008; cx.beginPath(); cx.arc(c,c,r*0.88,0,Math.PI*2); cx.stroke();
 }
 function tick(){
   raf=0;
