@@ -232,6 +232,21 @@ section.block > h2, .page h2{font-size:1.5625rem;margin-bottom:4px;font-variatio
 .changes{font-size:1.25rem;line-height:1.35;margin:0 0 26px;color:var(--ink);font-weight:700}
 .album section + section{padding-top:30px}
 
+/* all my coins: his own list joined with the Mint orders; count by size and weight, never a badge */
+.coll .crow{display:grid;grid-template-columns:4.875rem 1fr auto;gap:4px 14px;padding:14px 0;align-items:baseline}
+.coll .crow .d{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;color:var(--post);font-weight:650;font-size:1.1875rem}
+.coll .crow .n{font-family:var(--display);font-size:1.25rem;line-height:1.3;font-weight:500;color:var(--ink)}
+.coll .crow .cnt{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;font-weight:700;font-size:1.75rem;line-height:1;color:var(--ink);text-align:right;font-variation-settings:"opsz" 96}
+.coll .crow .cnt small{display:block;font-family:var(--body);font-weight:400;font-size:.875rem;color:var(--ink-soft)}
+.coll .crow .cnt.one{font-weight:400;color:var(--ink-soft);font-size:1.25rem}
+.coll .crow .lots{grid-column:2 / 4;margin:0;padding:0;list-style:none}
+.coll .crow .lots li{color:var(--ink-soft);font-size:1.0625rem;margin-top:2px}
+.coll .crow .lots li b{color:var(--ink);font-weight:700}
+.coll .crow.missing .n,.coll .crow.missing .d{color:var(--ink-soft);font-weight:400}
+.coll .cfound{color:var(--ink-soft);font-size:1rem;margin:10px 0 0}
+.coll .decade{font-family:var(--display);font-weight:700;font-size:2.25rem;line-height:1;color:var(--post);margin:30px 0 4px;font-variant-numeric:lining-nums tabular-nums;font-variation-settings:"opsz" 144}
+@media (max-width:420px){.coll .crow{grid-template-columns:3.75rem 1fr auto;gap:4px 10px}}
+
 /* orders from the mint, on the album page: state by weight and ink only */
 .orders{padding-bottom:4px}
 #h-orders:focus{outline:none}
@@ -432,6 +447,21 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
       <div class="wrap">
         <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
         <div id="album-coins">
+          <section class="orders coll" id="coll-block" aria-labelledby="h-coll" hidden>
+            <h2 id="h-coll" data-t="collH">All my coins</h2>
+            <p class="osum" id="csum" aria-live="polite"></p>
+            <label for="cq" class="skip" data-t="cSearchLbl">Search all my coins</label>
+            <input class="search" id="cq" type="search" autocomplete="off" data-p="cSearch" placeholder="Search a coin, year or denomination">
+            <p class="ctl" id="cfilt-l" data-t="oShowL">Show</p>
+            <div class="seg" role="radiogroup" aria-labelledby="cfilt-l" id="cfilt"></div>
+            <p class="ctl" id="csort-l" data-t="oSortL">Arrange</p>
+            <div class="seg" role="radiogroup" aria-labelledby="csort-l" id="csort"></div>
+            <p class="cfound" id="cfound" aria-live="polite"></p>
+            <ul class="rows" id="clist"></ul>
+            <button type="button" class="more" id="cmore" data-t="cMore">Show more coins</button>
+            <h3 id="h-rep" data-t="repH">Replica sets</h3>
+            <ul class="rows" id="crep"></ul>
+          </section>
           <section class="orders" id="orders-block" aria-labelledby="h-orders" hidden>
             <h2 id="h-orders" data-t="ordersH">My orders from the Mint</h2>
             <div class="seg" role="radiogroup" aria-label="Whose orders" id="oacct"></div>
@@ -520,6 +550,13 @@ const T={
      changed:n=>`${n} of your wanted ${n===1?"coin":"coins"} changed since you marked ${n===1?"it":"them"}.`,
      shows:"Shows and exhibitions",noShows:"No coin or stamp shows are listed right now. New ones appear here when they are announced.",
      price:"price",ask:"Ask about this",askHint:"Ask the helper bot anything about a coin or stamp",
+     collH:"All my coins",cSearch:"Search a coin, year or denomination",cSearchLbl:"Search all my coins",cMore:"Show more coins",
+     cSum:(n,a,y0,y1,b,v,np)=>`<b>${n}</b> coins in all: <b>${a}</b> from your own list (${y0} to ${y1}) and <b>${b}</b> bought from the Mint since. You paid <b>₹${v}</b> for the ones with a price written${np?`; ${np} older ones have no price in the list`:""}.`,
+     cfAll:"All",cfList:"From my list",cfMint:"Bought online",cfMiss:"Not in my collection yet",csYear:"By year",csName:"By name",csCount:"Most copies",
+     cFound:(n,c)=>`${n} ${n===1?"coin":"coins"}, ${c} ${c===1?"piece":"pieces"}`,cNone:"No coin matches.",cPieces:"pieces",cN:n=>n===1?"1 piece":`${n} pieces`,
+     cEach:"each",cAll:"in all",cListed:"In your list",cBought:(d,who)=>`Bought from the Mint, ${d}${who?`, on ${who}'s account`:""}`,
+     cMissing:"In your list, not marked as owned",cAvg:"average price",cBox:"box packing",cNoBox:"without box",cSilver:"silver",
+     repH:"Replica sets",repRow:(p,q,v)=>`${p} pieces a set${q>1?`, ${q} sets`:""}${v?`, ₹${v}`:""}`,
      ordersH:"My orders from the Mint",oMark:"Mark every delivered coin as “I have it”",oOpenH:"On the way",oAllH:"Every order",
      oSearch:"Search a coin or tracking number",oSearchLbl:"Search my orders",oShowL:"Show",oSortL:"Arrange",oMore:"Show more orders",
      oAcct:"Whose orders",fAll:"All",fOpen:"On the way",fDone:"Received",fVoid:"Cancelled",sName:"By coin name",sDate:"By date",
@@ -565,6 +602,13 @@ const T={
      changed:n=>`आपके चाहे गए सिक्कों में से ${n} में निशान लगाने के बाद बदलाव हुआ है।`,
      shows:"प्रदर्शनियाँ और मेले",noShows:"अभी कोई सिक्का या डाक टिकट प्रदर्शनी सूची में नहीं है। घोषणा होते ही यहाँ दिखेगी।",
      price:"दाम",ask:"इसके बारे में पूछें",askHint:"सिक्के या डाक टिकट के बारे में कुछ भी पूछें",
+     collH:"मेरे सभी सिक्के",cSearch:"सिक्का, साल या मूल्य खोजें",cSearchLbl:"मेरे सभी सिक्के खोजें",cMore:"और सिक्के दिखाएँ",
+     cSum:(n,a,y0,y1,b,v,np)=>`कुल <b>${n}</b> सिक्के: <b>${a}</b> आपकी अपनी सूची से (${y0} से ${y1}) और <b>${b}</b> उसके बाद टकसाल से खरीदे। जिनकी कीमत लिखी है उन पर <b>₹${v}</b> दिए${np?`; ${np} पुराने सिक्कों की कीमत सूची में नहीं है`:""}।`,
+     cfAll:"सभी",cfList:"मेरी सूची से",cfMint:"ऑनलाइन खरीदे",cfMiss:"अभी संग्रह में नहीं",csYear:"साल से",csName:"नाम से",csCount:"सबसे ज़्यादा",
+     cFound:(n,c)=>`${n} सिक्के, ${c} नग`,cNone:"कोई सिक्का नहीं मिला।",cPieces:"नग",cN:n=>`${n} नग`,
+     cEach:"प्रति नग",cAll:"कुल",cListed:"आपकी सूची में",cBought:(d,who)=>`टकसाल से खरीदा, ${d}${who?`, ${who} के खाते से`:""}`,
+     cMissing:"सूची में है, पास होने का निशान नहीं",cAvg:"औसत कीमत",cBox:"बॉक्स पैकिंग",cNoBox:"बिना बॉक्स",cSilver:"चाँदी",
+     repH:"रेप्लिका सेट",repRow:(p,q,v)=>`एक सेट में ${p} नग${q>1?`, ${q} सेट`:""}${v?`, ₹${v}`:""}`,
      ordersH:"टकसाल से मेरे ऑर्डर",oMark:"पहुँचे हुए सभी सिक्कों पर “मेरे पास है” लगाएँ",oOpenH:"रास्ते में",oAllH:"सभी ऑर्डर",
      oSearch:"सिक्का या ट्रैकिंग नंबर खोजें",oSearchLbl:"मेरे ऑर्डर खोजें",oShowL:"दिखाएँ",oSortL:"क्रम",oMore:"और ऑर्डर दिखाएँ",
      oAcct:"किसके ऑर्डर",fAll:"सभी",fOpen:"रास्ते में",fDone:"मिल गए",fVoid:"रद्द",sName:"सिक्के के नाम से",sDate:"तारीख से",
@@ -943,7 +987,7 @@ function render(){
   $("#have-extra").innerHTML=extra.map(id=>{ const m=marks[id]; return `<li class="srow extra"><p class="d"></p><div><p class="n">${esc(m.name)}</p><p class="v num">${typeof m.price==="number"?"₹"+inr(m.price)+", ":""}${esc(t("oFromOrders").toLowerCase())}</p><button type="button" data-unmark="${esc(id)}">${esc(t("oRemove"))}</button></div></li>`; }).join("");
   const hn=have.length+extra.length, hv=have.reduce((s,c)=>s+c.price,0)+extra.reduce((s,id)=>s+(typeof marks[id].price==="number"?marks[id].price:0),0);
   $("#have-total").textContent=hn?t("total")(hn,inr(hv)):"";
-  renderOrders();
+  renderColl(); renderOrders();
   $("#want").innerHTML=want.map(c=>coinRow(c,false,{changes:wch.get(c.id)})).join(""); $("#want-empty").hidden=want.length>0;
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
   $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
@@ -1033,6 +1077,64 @@ function renderOrders(){
   $("#olist").innerHTML=html||`<li class="empty">${esc(t("oNone"))}</li>`;
   $("#omore").hidden=total<=oShown;
 }
+// ---- all my coins: Papa's own list (his spreadsheet, 1970-2022) + every Mint order, one searchable list
+let cFilter="all", cSort=store("collSort")||"year", cQuery="", cShown=40;
+function remarkWords(r){ const k=(r||"").toLowerCase().trim(); return k==="box packing"?t("cBox"):k==="non box packing"?t("cNoBox"):k==="average price"?t("cAvg"):k==="silver"?t("cSilver"):r||""; }
+function collItems(){
+  const C=secret&&secret.collection; const out=[];
+  if(C&&Array.isArray(C.coins)){
+    const g=new Map();
+    C.coins.forEach(c=>{ const k=(c.year||"")+"|"+okey(c.name||c.title); if(!g.has(k)) g.set(k,{src:c.qty?"list":(c.online?"covered":"missing"),year:c.year,name:c.name||c.title,den:c.denomination,lots:[]});
+      const e=g.get(k); if(c.qty){ e.src="list"; e.lots.push({fin:c.finish,qty:c.qty,price:c.price,rem:c.remarks}); } });
+    g.forEach(e=>out.push(e));
+  }
+  acctList().forEach(A=>{ const g=new Map();
+    A.orders.forEach(o=>{ if(oClass(o)==="void") return; o.items.forEach(i=>{ const k=okey(i.short_title||i.product);
+      if(!g.has(k)) g.set(k,{src:"mint",acct:A.key==="papa"?"":(lang==="hi"&&A.label_hi?A.label_hi:A.label),year:+o.date.slice(0,4),date:o.date,name:tidy(i.short_title||i.product),den:i.denomination||"",lots:[]});
+      const e=g.get(k); if(o.date<e.date){ e.date=o.date; e.year=+o.date.slice(0,4); }
+      e.lots.push({fin:(i.finish||"").replace(/\//g,", "),qty:i.qty||1,price:typeof i.unit_price==="number"?i.unit_price:0,date:o.date}); }); });
+    g.forEach(e=>out.push(e)); });
+  out.forEach(e=>{ e.qty=e.lots.reduce((s,l)=>s+l.qty,0); });
+  return out;
+}
+function collRow(e){
+  const one=e.qty===1, miss=e.src==="missing";
+  const lots=e.lots.map(l=>{ const bits=[l.fin&&`<b>${esc(l.fin)}</b>`, esc(t("cN")(l.qty)),
+      l.price?`₹${inr(l.price)} ${esc(t("cEach"))}${l.qty>1?`, ₹${inr(l.price*l.qty)} ${esc(t("cAll"))}`:""}`:"", l.rem&&esc(remarkWords(l.rem)), l.date&&e.lots.length>1&&esc(dateFull(l.date))].filter(Boolean);
+      return `<li class="num">${bits.join(", ")}</li>`; }).join("");
+  const where=miss?t("cMissing"):e.src==="mint"?t("cBought")(dateFull(e.date),e.acct):t("cListed");
+  return `<li class="crow${miss?" missing":""}"><p class="d">${esc(e.year||"")}</p><p class="n">${esc(e.name)}</p>`
+    +`<p class="cnt${one?" one":""}" aria-label="${e.qty} ${esc(t("cPieces"))}">${miss?"":e.qty}${e.qty>1?`<small>${esc(t("cPieces"))}</small>`:""}</p>`
+    +`<ul class="lots">${e.den?`<li>${esc(e.den)}</li>`:""}${lots}<li>${esc(where)}</li></ul></li>`;
+}
+function renderColl(){
+  const items=collItems(); $("#coll-block").hidden=!items.length; if(!items.length) return;
+  const list=items.filter(e=>e.src==="list"), mint=items.filter(e=>e.src==="mint");
+  const nl=list.reduce((s,e)=>s+e.qty,0), nm=mint.reduce((s,e)=>s+e.qty,0);
+  const yrs=list.map(e=>e.year).filter(Boolean);
+  const paid=items.reduce((s,e)=>s+e.lots.reduce((x,l)=>x+(l.price||0)*l.qty,0),0), np=list.filter(e=>e.lots.some(l=>!l.price)).length;
+  $("#csum").innerHTML=t("cSum")(inr(nl+nm),inr(nl),yrs.length?Math.min(...yrs):"",yrs.length?Math.max(...yrs):"",inr(nm),inr(paid),np);
+  seg($("#cfilt"),[["all",t("cfAll")],["list",t("cfList")],["mint",t("cfMint")],["missing",t("cfMiss")]],cFilter);
+  seg($("#csort"),[["year",t("csYear")],["name",t("csName")],["count",t("csCount")]],cSort);
+  const q=cQuery.trim().toLowerCase();
+  let rows=items.filter(e=>e.src!=="covered"&&(cFilter==="all"?e.src!=="missing":e.src===cFilter))
+    .filter(e=>!q||(e.name+" "+e.year+" "+e.den+" "+e.lots.map(l=>l.fin+" "+(l.rem||"")).join(" ")).toLowerCase().includes(q));
+  rows.sort(cSort==="name"?(a,b)=>a.name.localeCompare(b.name,"en",{numeric:true}):cSort==="count"?(a,b)=>b.qty-a.qty||a.year-b.year:(a,b)=>a.year-b.year||a.name.localeCompare(b.name));
+  $("#cfound").textContent=rows.length?t("cFound")(inr(rows.length),inr(rows.reduce((s,e)=>s+e.qty,0))):"";
+  let html="", dec="";
+  rows.slice(0,cShown).forEach(e=>{ if(cSort==="year"&&e.year){ const d=Math.floor(e.year/10)*10+"s"; if(d!==dec){ dec=d; html+=`<li><h4 class="decade">${esc(d)}</h4></li>`; } } html+=collRow(e); });
+  $("#clist").innerHTML=html||`<li class="empty">${esc(t("cNone"))}</li>`;
+  $("#cmore").hidden=rows.length<=cShown;
+  const reps=(secret.collection&&secret.collection.replicas)||[]; const showRep=reps.length&&(cFilter==="all"||cFilter==="list")&&!q;
+  $("#h-rep").hidden=!showRep; $("#crep").hidden=!showRep;
+  $("#crep").innerHTML=showRep?reps.map(r=>`<li class="crow"><p class="d"></p><p class="n">${esc(r.title)}</p><p class="cnt${(r.qty||1)===1?" one":""}">${r.qty||1}</p><ul class="lots"><li class="num">${esc(t("repRow")(r.pieces||"?",r.qty||1,r.total?inr(r.total):""))}</li></ul></li>`).join(""):"";
+}
+function onCSeg(el,fn){ el.addEventListener("click",e=>{ const b=e.target.closest('[role="radio"]'); if(!b) return; fn(b.dataset.v); cShown=40; renderColl();
+  const again=el.querySelector(`[data-v="${CSS.escape(b.dataset.v)}"]`); if(again) again.focus(); }); radioKeys(el); }
+onCSeg($("#cfilt"),v=>{ cFilter=v; });
+onCSeg($("#csort"),v=>{ cSort=v; store("collSort",v); });
+$("#cq").oninput=e=>{ cQuery=e.target.value; cShown=40; renderColl(); };
+$("#cmore").onclick=()=>{ cShown+=40; renderColl(); };
 function onSeg(el,fn){ el.addEventListener("click",e=>{ const b=e.target.closest('[role="radio"]'); if(!b) return; fn(b.dataset.v); oShown=40; render();
   const again=el.querySelector(`[data-v="${CSS.escape(b.dataset.v)}"]`); if(again) again.focus(); }); radioKeys(el); }
 onSeg($("#oacct"),v=>{ oAcct=v; store("orderAcct",v); $("#omsg").hidden=true; });
