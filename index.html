@@ -21,6 +21,10 @@
 (function(){ var ok=["burgundy","midnight","walnut","slate","baize"], q=(new URLSearchParams(location.search).get("theme")||"").toLowerCase(), v=null;
   try{ v=JSON.parse(localStorage.getItem("album.theme")); }catch(e){}
   document.documentElement.setAttribute("data-theme", ok.indexOf(q)>=0?q:(ok.indexOf(v)>=0?v:"burgundy")); })();
+/* text size before first paint: ?textsize=big|normal overrides once, else the saved choice */
+(function(){ var q=(new URLSearchParams(location.search).get("textsize")||"").toLowerCase(), v=null;
+  try{ v=JSON.parse(localStorage.getItem("album.textsize")); }catch(e){}
+  if((q||v)==="big") document.documentElement.setAttribute("data-text","big"); })();
 </script>
 <style>
 /* The collector's cabinet: a dark tray (velvet, baize, walnut...) with metal fittings for coins, and cream stamp-album pages laid on it.
@@ -56,8 +60,9 @@ html[data-theme="baize"]{
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;background:var(--baize)}
-body{margin:0;background:var(--baize);color:var(--cream-text-on-baize);font-family:var(--body);font-size:19px;line-height:1.5;
+html{-webkit-text-size-adjust:100%;background:var(--baize);font-size:16px}
+html[data-text="big"]{font-size:19.5px}
+body{margin:0;background:var(--baize);color:var(--cream-text-on-baize);font-family:var(--body);font-size:1.1875rem;line-height:1.5;
   padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden}
 h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;line-height:1.15;font-optical-sizing:auto}
 p{margin:0}
@@ -71,9 +76,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 [hidden]{display:none !important}
 
 /* header */
-header.top{padding:calc(18px + env(safe-area-inset-top)) 0 4px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-header.top h1{font-size:29px;font-weight:600;font-variation-settings:"opsz" 96;color:var(--cream);letter-spacing:-0.01em}
-.lang{display:flex;gap:2px;font-size:17px;flex-shrink:0}
+header.top{padding:calc(18px + env(safe-area-inset-top)) 0 0}
+.ctrls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 0 -8px}
+.tsize{display:flex;gap:2px;flex-shrink:0}
+.tsize button{min-width:var(--tap);min-height:var(--tap);padding:0 6px;color:var(--felt-quiet);font-family:var(--display);font-weight:400;line-height:1}
+.tsize #ts-normal{font-size:18px}
+.tsize #ts-big{font-size:24px}
+.tsize button[aria-pressed="true"]{color:var(--cream);font-weight:750}
+header.top h1{font-size:1.8125rem;font-weight:600;font-variation-settings:"opsz" 96;color:var(--cream);letter-spacing:-0.01em}
+.lang{display:flex;gap:2px;font-size:1.0625rem;flex-shrink:0}
 .lang button{padding:0 8px;min-height:var(--tap);color:var(--felt-quiet);font-weight:400}
 .lang button[aria-pressed="true"]{color:var(--cream);font-weight:700}
 
@@ -88,60 +99,76 @@ header.top h1{font-size:29px;font-weight:600;font-variation-settings:"opsz" 96;c
 
 /* the three-way switch */
 .mode{display:grid;grid-template-columns:1fr 1fr 1fr;margin:10px 0 8px}
-.mode button{min-height:58px;font-family:var(--display);font-size:22px;color:var(--felt-quiet);font-weight:400;font-variation-settings:"opsz" 48}
-.mode button[aria-checked="true"]{color:var(--brass-soft);font-weight:750;font-size:24px}
+.mode button{min-height:58px;font-family:var(--display);font-size:1.375rem;color:var(--felt-quiet);font-weight:400;font-variation-settings:"opsz" 48}
+.mode button[aria-checked="true"]{color:var(--brass-soft);font-weight:750;font-size:1.5rem}
 .mode button:first-child{text-align:left}
 .mode button:last-child{text-align:right}
 
-.status{font-size:21px;line-height:1.35;margin:6px 0 4px;color:var(--cream)}
+.status{font-size:1.3125rem;line-height:1.35;margin:6px 0 4px;color:var(--cream)}
 .status b{color:var(--brass-soft);font-family:var(--display);font-weight:700}
 .status .quiet{color:var(--felt-quiet)}
 .status .stampline{display:block;margin-top:8px;color:var(--cream)}
 .status .stampline b{color:var(--brass-soft)}
-.notice{font-size:18px;line-height:1.45;margin:12px 0 0;color:var(--cream)}
+.notice{font-size:1.125rem;line-height:1.45;margin:12px 0 0;color:var(--cream)}
 .notice .lbl{color:var(--brass-soft);font-weight:700}
-.error{margin:16px 0;font-size:20px;color:var(--cream);font-weight:700}
+.error{margin:16px 0;font-size:1.25rem;color:var(--cream);font-weight:700}
 
 /* coin tray (baize) */
 .tray{padding:12px 0 18px}
 .hero canvas{display:block;width:min(330px,84vw);height:auto;aspect-ratio:660/600;margin:6px auto 0;touch-action:pan-y}
 .hero .cap{text-align:center;margin-top:6px}
-.hero .lead{color:var(--felt-quiet);font-size:17px}
-.hero .cap h2{font-size:25px;font-weight:600;margin:6px 0 6px;color:var(--cream);font-variation-settings:"opsz" 72}
-.hero .price{font-size:36px;color:var(--brass);font-weight:650}
-.hero .meta{color:var(--felt-quiet);font-size:17px;margin-top:2px}
-.hero .buy{display:inline-flex;align-items:center;min-height:56px;margin-top:8px;padding:0 10px;color:var(--brass-soft);font-weight:700;font-size:21px}
-.hero .tilt{display:block;margin:0 auto;color:var(--felt-quiet);min-height:var(--tap);font-size:17px;padding:0 10px}
+.hero .lead{color:var(--felt-quiet);font-size:1.0625rem}
+.hero .cap h2{font-size:1.5625rem;font-weight:600;margin:6px 0 6px;color:var(--cream);font-variation-settings:"opsz" 72}
+.hero .price{font-size:2.25rem;color:var(--brass);font-weight:650}
+.hero .meta{color:var(--felt-quiet);font-size:1.0625rem;margin-top:2px}
+.hero .buy{display:inline-flex;align-items:center;min-height:56px;margin-top:8px;padding:0 10px;color:var(--brass-soft);font-weight:700;font-size:1.3125rem}
+.hero .tilt{display:block;margin:0 auto;color:var(--felt-quiet);min-height:var(--tap);font-size:1.0625rem;padding:0 10px}
 
 section.block{padding:30px 0 6px}
-section.block > h2, .page h2{font-size:25px;margin-bottom:4px;font-variation-settings:"opsz" 72}
+section.block > h2, .page h2{font-size:1.5625rem;margin-bottom:4px;font-variation-settings:"opsz" 72}
 .tray h2{color:var(--cream)}
 .seg{display:flex;flex-wrap:wrap;gap:0 20px;margin:8px 0 2px}
-.seg button{padding:0;color:var(--felt-quiet);min-height:var(--tap);font-size:18px}
+.seg button{padding:0;color:var(--felt-quiet);min-height:var(--tap);font-size:1.125rem}
 .seg button[aria-checked="true"]{color:var(--brass-soft);font-weight:700}
-.search{width:100%;font:inherit;font-size:19px;padding:0 16px;border:0;border-radius:10px;background:var(--baize-deep);color:var(--cream);margin:8px 0 6px;min-height:56px}
+.search{width:100%;font:inherit;font-size:1.1875rem;padding:0 16px;border:0;border-radius:10px;background:var(--baize-deep);color:var(--cream);margin:8px 0 6px;min-height:56px}
 .search::placeholder{color:var(--felt-quiet)}
 
 .rows{list-style:none;margin:0;padding:0}
 .row{display:grid;grid-template-columns:78px 1fr;gap:16px;padding:18px 0;align-items:start}
 .row img.thumb{width:78px;height:78px;object-fit:cover;border-radius:50%;background:var(--cream-deep);box-shadow:0 6px 12px rgba(0,0,0,.35)}
-.row .name{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.28;color:var(--cream)}
+.row .name{font-family:var(--display);font-weight:500;font-size:1.3125rem;line-height:1.28;color:var(--cream)}
 .row .name.fresh{font-weight:700}
-.row .new{color:var(--brass-soft);font-weight:700;font-size:17px}
-.row .price{font-size:25px;margin-top:4px;color:var(--brass)}
-.row .meta{color:var(--felt-quiet);font-size:17px;margin-top:2px}
+.row .new{color:var(--brass-soft);font-weight:700;font-size:1.0625rem}
+.row .price{font-size:1.5625rem;margin-top:4px;color:var(--brass)}
+.row .meta{color:var(--felt-quiet);font-size:1.0625rem;margin-top:2px}
 .row .meta.out{font-style:italic}
 .acts{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:6px}
 .acts a{flex-basis:100%}
-.acts a,.acts button{min-height:var(--tap);display:inline-flex;align-items:center;font-size:18px;color:var(--felt-quiet)}
+.acts a,.acts button{min-height:var(--tap);display:inline-flex;align-items:center;font-size:1.125rem;color:var(--felt-quiet)}
 .acts a{color:var(--cream);font-weight:700}
+.acts a.ask{flex-basis:auto;color:var(--felt-quiet);font-size:1.0625rem}
 .acts button[aria-pressed="true"]{color:var(--brass-soft);font-weight:700}
-.more{display:block;width:100%;min-height:56px;font-weight:700;font-size:19px;color:var(--brass-soft);margin:4px 0 8px}
-.empty{color:var(--felt-quiet);padding:12px 0 18px;font-size:18px}
+.row .sold{color:var(--felt-quiet);font-size:1.0625rem;margin-top:2px}
+.row .fast{color:var(--cream);font-weight:700;font-size:1.125rem;margin-top:4px}
+.row .was{color:var(--felt-quiet);font-size:1.0625rem;margin-top:2px}
+.hero .was{color:var(--felt-quiet);font-size:1.0625rem;margin-top:-2px}
+.fastnote{color:var(--felt-quiet);font-size:1.125rem;padding:8px 0 4px}
+.say{min-height:var(--tap);display:inline-flex;align-items:center;font-size:1.0625rem;font-weight:700;color:var(--felt-quiet)}
+.say[data-on="true"]{color:var(--brass-soft)}
+.hero .say{padding:0 10px}
+.sayrow{display:flex;flex-wrap:wrap;gap:0 22px}
+.hero .sayrow{justify-content:center;gap:0 4px}
+.askhint{display:inline-flex;align-items:center;min-height:var(--tap);font-size:1.0625rem;color:var(--felt-quiet)}
+.page .askhint{color:var(--ink-soft)}
+.page .askhint{margin:-8px 0 14px}
+.page .say{color:var(--ink-soft)}
+.page .say[data-on="true"]{color:var(--post)}
+.more{display:block;width:100%;min-height:56px;font-weight:700;font-size:1.1875rem;color:var(--brass-soft);margin:4px 0 8px}
+.empty{color:var(--felt-quiet);padding:12px 0 18px;font-size:1.125rem}
 
 /* the stamp on the felt */
 .stampstage{padding:34px 0 30px;display:flex;flex-direction:column;align-items:center}
-.stampstage .lead{color:var(--felt-quiet);font-size:17px;margin-bottom:16px;text-align:center}
+.stampstage .lead{color:var(--felt-quiet);font-size:1.0625rem;margin-bottom:16px;text-align:center}
 .stampwrap{position:relative;padding:0 22px 0 0;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4))}
 .stamp{width:288px;height:360px;padding:6px;
   background:radial-gradient(circle at 6px 6px, transparent 3.7px, var(--cream-deep) 4.3px) 0 0/12px 12px}
@@ -158,53 +185,60 @@ section.block > h2, .page h2{font-size:25px;margin-bottom:4px;font-variation-set
 
 /* the album page (cream) */
 .page{background:var(--cream);color:var(--ink);padding:30px 0 34px}
-.page .lead{color:var(--ink-soft);font-size:18px;margin:2px 0 6px}
+.page .lead{color:var(--ink-soft);font-size:1.125rem;margin:2px 0 6px}
 .page .empty{color:var(--ink-soft)}
 .page .more{color:var(--post)}
-.srow{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:14px 0;align-items:baseline}
-.srow .d{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;color:var(--post);font-weight:650;font-size:19px}
+.srow{display:grid;grid-template-columns:4.875rem 1fr;gap:14px;padding:14px 0;align-items:baseline}
+.srow .d{font-family:var(--display);font-variant-numeric:tabular-nums lining-nums;color:var(--post);font-weight:650;font-size:1.1875rem}
 .srow .d.newest{font-weight:800}
-.srow .n{font-family:var(--display);font-size:20px;line-height:1.3;font-weight:500}
-.srow .v{color:var(--ink-soft);font-size:17px;margin-top:2px}
+.srow .n{font-family:var(--display);font-size:1.25rem;line-height:1.3;font-weight:500}
+.srow .v{color:var(--ink-soft);font-size:1.0625rem;margin-top:2px}
 .srow .v b{color:var(--post)}
 
-#news-coins-block:not([hidden]) + section{padding-top:30px}
+.news .wrap > section + section{padding-top:30px}
+.shrow .where{color:var(--ink-soft);font-size:1rem;margin-top:2px}
+.shrow a.n{display:block;color:var(--ink)}
+.shrow a.n:active{color:var(--post)}
 .nrow{padding:14px 0}
-.nrow .src{color:var(--ink-soft);font-size:16px}
+.nrow .src{color:var(--ink-soft);font-size:1rem}
 .nrow .src b{color:var(--post)}
-.nrow a{display:block;font-family:var(--display);font-weight:500;font-size:21px;line-height:1.3;color:var(--ink);min-height:var(--tap)}
+.nrow a{display:block;font-family:var(--display);font-weight:500;font-size:1.3125rem;line-height:1.3;color:var(--ink);min-height:var(--tap)}
 .nrow a:active{color:var(--post)}
 
 /* videos on the felt */
 .vids{padding:26px 0 10px}
-.vids h2{color:var(--cream);font-size:25px}
-.vids .lead{color:var(--felt-quiet);font-size:17px;margin:4px 0 8px}
+.vids h2{color:var(--cream);font-size:1.5625rem}
+.vids .lead{color:var(--felt-quiet);font-size:1.0625rem;margin:4px 0 8px}
 .vrow{padding:16px 0}
 .vrow a{display:block}
 .vrow img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--baize-deep);display:block;box-shadow:0 8px 16px rgba(0,0,0,.35)}
-.vrow .title{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.3;margin-top:10px;color:var(--cream)}
-.vrow .src{color:var(--felt-quiet);font-size:16px;margin-top:2px}
+.vrow .title{font-family:var(--display);font-weight:500;font-size:1.3125rem;line-height:1.3;margin-top:10px;color:var(--cream)}
+.vrow .src{color:var(--felt-quiet);font-size:1rem;margin-top:2px}
 
 /* my album page */
 .album .row .name{color:var(--ink)}
 .album .row .price{color:var(--ink)}
 .album .row .meta{color:var(--ink-soft)}
 .album .acts a{color:var(--ink)}
+.album .acts a.ask{color:var(--ink-soft)}
 .album .acts button{color:var(--ink-soft)}
 .album .acts button[aria-pressed="true"]{color:var(--post)}
 .album .row img.thumb{box-shadow:0 4px 10px rgba(28,26,22,.25)}
-.total{font-size:21px;margin:4px 0 2px;color:var(--ink)}
+.total{font-size:1.3125rem;margin:4px 0 2px;color:var(--ink)}
+.album .row .sold,.album .row .was{color:var(--ink-soft)}
+.album .row .change{color:var(--post);font-weight:700;font-size:1.0625rem;margin-top:2px}
+.changes{font-size:1.25rem;line-height:1.35;margin:0 0 26px;color:var(--ink);font-weight:700}
 .album section + section{padding-top:30px}
 
-footer{color:var(--felt-quiet);font-size:16px;padding:30px 0 16px;line-height:1.55}
+footer{color:var(--felt-quiet);font-size:1rem;padding:30px 0 16px;line-height:1.55}
 footer p + p{margin-top:8px}
 
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--baize-deep);display:flex;padding:4px 6px calc(6px + env(safe-area-inset-bottom));z-index:20}
-nav.tabs button{flex:1;min-height:60px;font-size:17px;color:var(--felt-quiet);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
+nav.tabs button{flex:1;min-height:60px;font-size:1.0625rem;color:var(--felt-quiet);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.15}
 nav.tabs button[aria-selected="true"]{color:var(--brass-soft);font-weight:700}
-nav.tabs button .hi{font-size:14px;font-weight:400}
+nav.tabs button .hi{font-size:0.875rem;font-weight:400}
 @media (prefers-reduced-motion: reduce){ .hero .tilt{display:none} }
-@media (max-width:360px){ .stamp{width:264px;height:336px} .stamp .sname{font-size:24px} .mode button{font-size:19px} .mode button[aria-checked="true"]{font-size:21px} }
+@media (max-width:360px){ .stamp{width:264px;height:336px} .stamp .sname{font-size:24px} .mode button{font-size:1.1875rem} .mode button[aria-checked="true"]{font-size:1.3125rem} }
 </style>
 </head>
 <body>
@@ -212,9 +246,15 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
 <div class="wrap">
 <header class="top">
   <h1 data-t="title">Collector's Album</h1>
-  <div class="lang" role="group" aria-label="Language">
-    <button type="button" id="lang-en" aria-pressed="true">English</button>
-    <button type="button" id="lang-hi" aria-pressed="false" lang="hi">हिंदी</button>
+  <div class="ctrls">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" aria-pressed="true">English</button>
+      <button type="button" id="lang-hi" aria-pressed="false" lang="hi">हिंदी</button>
+    </div>
+    <div class="tsize" role="group" aria-label="Text size" id="tsize">
+      <button type="button" id="ts-normal" aria-pressed="true" aria-label="Normal text">A</button>
+      <button type="button" id="ts-big" aria-pressed="false" aria-label="Larger text">A+</button>
+    </div>
   </div>
 </header>
 <div class="themes" role="radiogroup" aria-label="Tray colour" id="themes">
@@ -245,11 +285,20 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
             <p class="lead" data-t="newest">Newest on the mint store</p>
             <h2 id="hero-name"></h2>
             <p class="price num" id="hero-price"></p>
+            <p class="was num" id="hero-was" hidden></p>
             <p class="meta" id="hero-meta"></p>
+            <div class="sayrow" id="hero-say"></div>
             <a class="buy" id="hero-buy" href="#" target="_blank" rel="noopener" data-t="buy">Buy on the mint site</a>
             <button type="button" class="tilt" id="tilt" data-t="tilt">Tilt the phone to see the shine</button>
+            <a class="askhint" id="ask-hint-home" target="_blank" rel="noopener" href="https://t.me/MkcCoinhelperbot"><span data-t="askHint">Ask the helper bot anything about a coin or stamp</span></a>
           </div>
         </div>
+
+        <section class="block" aria-labelledby="h-fast" id="fast-block">
+          <h2 id="h-fast" data-t="fast">Selling fast</h2>
+          <ul class="rows" id="fast"></ul>
+          <p class="fastnote" id="fast-empty" hidden></p>
+        </section>
 
         <section class="block" aria-labelledby="h-fresh">
           <h2 id="h-fresh" data-t="fresh">New this week</h2>
@@ -307,6 +356,11 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
   <section id="panel-news" role="tabpanel" aria-labelledby="tab-news" hidden>
     <div class="page news">
       <div class="wrap">
+        <a class="askhint" id="ask-hint-news" target="_blank" rel="noopener" href="https://t.me/MkcCoinhelperbot"><span data-t="askHint">Ask the helper bot anything about a coin or stamp</span></a>
+        <section id="news-shows-block" aria-labelledby="h-sh">
+          <h2 id="h-sh" data-t="shows">Shows and exhibitions</h2>
+          <ul class="rows" id="shows"></ul>
+        </section>
         <section id="news-coins-block" aria-labelledby="h-nc">
           <h2 id="h-nc" data-t="coinNews">Coin news</h2>
           <ul class="rows" id="news-coins"></ul>
@@ -334,6 +388,7 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
       <div class="wrap">
         <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
         <div id="album-coins">
+          <p class="changes" id="want-changes" hidden></p>
           <section aria-labelledby="h-have">
             <h2 id="h-have" data-t="have">Coins I have</h2>
             <p class="total num" id="have-total"></p>
@@ -393,7 +448,15 @@ const T={
      videosNote:"Chosen channels only. Tap a picture to watch on YouTube.",noVideos:"No new videos for this choice yet.",
      noNews:"No news for this choice yet.",
      stampFig:(name,v,d)=>`Stamp: ${name}, ${v}, issued ${d}`,
-     offline:"Could not load the latest list. Check the internet connection, then open the album again."},
+     offline:"Could not load the latest list. Check the internet connection, then open the album again.",
+     listen:"Listen",stop:"Stop",textSize:"Text size",tsNormal:"Normal text",tsBig:"Larger text",
+     fast:"Selling fast",sold2:n=>`${n} sold in 2 days`,fastLine:(n,l)=>l==null?`${n} sold in 2 days`:`${n} sold in 2 days, ${l} left`,
+     fastNone:d=>d?`Nothing is selling unusually fast. Stock tracking started ${d}.`:"Nothing is selling unusually fast. Stock tracking starts today.",
+     wasOn:(v,d)=>d?`Was ₹${v} on ${d}`:`Was ₹${v}`,was:v=>`Was ₹${v}`,
+     repriced:(a,b)=>`Repriced from ₹${a} to ₹${b}`,backIn:"Back in stock",nowOut:"Sold out",stockDown:(a,b)=>`Stock down from ${a} to ${b}`,
+     changed:n=>`${n} of your wanted ${n===1?"coin":"coins"} changed since you marked ${n===1?"it":"them"}.`,
+     shows:"Shows and exhibitions",noShows:"No coin or stamp shows are listed right now. New ones appear here when they are announced.",
+     price:"price",ask:"Ask about this",askHint:"Ask the helper bot anything about a coin or stamp"},
  hi:{title:"संग्रह एल्बम",skip:"सीधे सामग्री पर जाएँ",mCoins:"सिक्के",mBoth:"दोनों",mStamps:"डाक टिकट",
      buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
      freshEmpty:"इस हफ़्ते कोई नया सिक्का नहीं। मिंट महीने में कुछ ही सिक्के निकालता है।",all:"मिंट स्टोर के सभी सिक्के",
@@ -417,13 +480,26 @@ const T={
      videosNote:"सिर्फ़ चुने हुए चैनल। तस्वीर दबाएँ, YouTube पर चलेगा।",noVideos:"इस चुनाव के लिए अभी कोई नया वीडियो नहीं।",
      noNews:"इस चुनाव के लिए अभी कोई खबर नहीं।",
      stampFig:(name,v,d)=>`डाक टिकट: ${name}, ${v}, ${d} को जारी`,
-     offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट देखें, फिर एल्बम दोबारा खोलें।"}
+     offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट देखें, फिर एल्बम दोबारा खोलें।",
+     listen:"सुनें",stop:"रोकें",textSize:"अक्षरों का आकार",tsNormal:"सामान्य अक्षर",tsBig:"बड़े अक्षर",
+     fast:"तेज़ी से बिक रहे",sold2:n=>`2 दिन में ${n} बिके`,fastLine:(n,l)=>l==null?`2 दिन में ${n} बिके`:`2 दिन में ${n} बिके, ${l} बचे`,
+     fastNone:d=>d?`अभी कोई सिक्का असामान्य तेज़ी से नहीं बिक रहा। स्टॉक पर नज़र ${d} से रखी जा रही है।`:"अभी कोई सिक्का असामान्य तेज़ी से नहीं बिक रहा। स्टॉक पर नज़र आज से शुरू होती है।",
+     wasOn:(v,d)=>d?`${d} को ₹${v} था`:`पहले ₹${v} था`,was:v=>`पहले ₹${v} था`,
+     repriced:(a,b)=>`दाम ₹${a} से बदलकर ₹${b} हुआ`,backIn:"फिर से स्टॉक में",nowOut:"अब बिक गया",stockDown:(a,b)=>`स्टॉक ${a} से घटकर ${b}`,
+     changed:n=>`आपके चाहे गए सिक्कों में से ${n} में निशान लगाने के बाद बदलाव हुआ है।`,
+     shows:"प्रदर्शनियाँ और मेले",noShows:"अभी कोई सिक्का या डाक टिकट प्रदर्शनी सूची में नहीं है। घोषणा होते ही यहाँ दिखेगी।",
+     price:"दाम",ask:"इसके बारे में पूछें",askHint:"सिक्के या डाक टिकट के बारे में कुछ भी पूछें"}
 };
 function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
 const urlQ=new URLSearchParams(location.search), urlMode=(urlQ.get("mode")||"").toLowerCase(), urlLang=(urlQ.get("lang")||"").toLowerCase();
 let lang=["en","hi"].includes(urlLang)?urlLang:(store("lang")||"en"), data=null, mint="", query="", shown=20, stampsShown=10;
 let mode=["coins","both","stamps"].includes(urlMode)?urlMode:(store("mode")||"both");
-const marks=store("marks")||{};   // id -> "have" | "want"
+/* marks: id -> {kind:"have"|"want", price, stock, inStock} taken when marked; older saves hold a bare string */
+const marks=(()=>{ const raw=store("marks"), m={}; if(raw&&typeof raw==="object") for(const id in raw){ const v=raw[id];
+  if(typeof v==="string"&&(v==="have"||v==="want")) m[id]={kind:v,price:null,stock:null};
+  else if(v&&typeof v==="object"&&(v.kind==="have"||v.kind==="want")) m[id]={kind:v.kind,price:typeof v.price==="number"?v.price:null,stock:Number.isInteger(v.stock)?v.stock:null,inStock:typeof v.inStock==="boolean"?v.inStock:undefined}; }
+  return m; })();
+const kindOf=id=>marks[id]?marks[id].kind:null;
 
 const t=k=>T[lang][k];
 let coinReady=false;
@@ -438,6 +514,40 @@ function denom(s){
   return {v, each:/each/i.test(s)};
 }
 const showCoins=()=>mode!=="stamps", showStamps=()=>mode!=="coins";
+const isInt=v=>Number.isInteger(v);
+/* ask: opens Papa's Telegram helper bot with the question already typed */
+const ASK_BOT="MkcCoinhelperbot";
+const askBot=()=>{ const b=data&&typeof data.ask_bot==="string"?data.ask_bot.replace(/^@/,"").trim():""; return /^[A-Za-z0-9_]{3,64}$/.test(b)?b:ASK_BOT; };
+function askLink(q){ const text=(lang==="hi"?"इसके बारे में बताइए: ":"")+q;
+  return `<a class="say ask" href="${esc("https://t.me/"+askBot()+"?text="+encodeURIComponent(text))}" target="_blank" rel="noopener">${esc(t("ask"))}</a>`; }
+const coinQ=c=>`Tell me about the coin: ${cleanName(c.name)} (${[c.mint,typeof c.price==="number"?"₹"+inr(c.price):""].filter(Boolean).join(", ")})`;
+/* units left: the new stock_n field, else read from the store's "25 in stock" text */
+function stockN(c){ if(isInt(c.stock_n)) return c.stock_n; const m=/(\d[\d,]*)\s*in stock/i.exec(c.stock||""); return m?+m[1].replace(/,/g,""):null; }
+function prevPrice(c){ const h=Array.isArray(c.price_history)?c.price_history.filter(e=>Array.isArray(e)&&typeof e[1]==="number"):[]; return h.length>=2?{date:h[h.length-2][0],price:h[h.length-2][1],now:h[h.length-1][1]}:null; }
+
+/* listen: read one item aloud; Devanagari text gets a Hindi voice, else Indian English */
+const canSpeak=typeof window.speechSynthesis!=="undefined"&&typeof window.SpeechSynthesisUtterance!=="undefined";
+const sayText=new Map(); let sayKey=null, sayUtter=null;
+function sayBtn(key,text){ if(!canSpeak) return ""; sayText.set(key,text); const on=sayKey===key;
+  return `<button type="button" class="say" data-say="${esc(key)}" data-on="${on}">${esc(t(on?"stop":"listen"))}</button>`; }
+function saySync(){ document.querySelectorAll("[data-say]").forEach(b=>{ const on=b.dataset.say===sayKey; b.dataset.on=on; b.textContent=t(on?"stop":"listen"); }); }
+function sayStop(){ if(!canSpeak) return; sayKey=null; sayUtter=null; try{ speechSynthesis.cancel(); }catch(e){} saySync(); }
+function pickVoice(l){ let vs=[]; try{ vs=speechSynthesis.getVoices()||[]; }catch(e){} const n=v=>String(v.lang||"").replace("_","-").toLowerCase();
+  return vs.find(v=>n(v)===l.toLowerCase())||vs.find(v=>n(v).startsWith(l.slice(0,2)))||null; }
+function say(key){
+  if(!canSpeak) return;
+  if(sayKey===key){ sayStop(); return; }
+  const text=sayText.get(key); if(!text) return;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const u=new SpeechSynthesisUtterance(text), l=/[\u0900-\u097F]/.test(text)?"hi-IN":"en-IN", v=pickVoice(l);
+  u.lang=v?v.lang:l; if(v) u.voice=v; u.rate=0.92;
+  u.onend=u.onerror=()=>{ if(sayUtter===u){ sayKey=null; sayUtter=null; saySync(); } };
+  sayKey=key; sayUtter=u; saySync();
+  speechSynthesis.speak(u);
+}
+if(canSpeak){ try{ speechSynthesis.getVoices(); }catch(e){} }   // starts the voice list loading
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-say]"); if(b) say(b.dataset.say); });
+window.addEventListener("pagehide",sayStop);
 
 function applyLang(){
   document.documentElement.lang=lang==="hi"?"hi":"en";
@@ -445,11 +555,22 @@ function applyLang(){
   document.querySelectorAll("[data-p]").forEach(el=>{ el.placeholder=t(el.dataset.p); });
   $("#lang-en").setAttribute("aria-pressed",lang==="en"); $("#lang-hi").setAttribute("aria-pressed",lang==="hi");
   $("#mode").setAttribute("aria-label",lang==="hi"?"क्या दिखाएँ":"Show");
+  $("#tsize").setAttribute("aria-label",t("textSize")); $("#ts-normal").setAttribute("aria-label",t("tsNormal")); $("#ts-big").setAttribute("aria-label",t("tsBig"));
+  sayStop();
   applyTheme();
   if(data) render(); else $("#status").textContent=lang==="hi"?"एल्बम खुल रहा है।":"Loading the album.";
 }
 $("#lang-en").onclick=()=>{lang="en";store("lang",lang);applyLang();};
 $("#lang-hi").onclick=()=>{lang="hi";store("lang",lang);applyLang();};
+
+/* text size: html font-size steps between 16px and 19.5px; set before first paint in the head */
+function applyText(){ const big=document.documentElement.getAttribute("data-text")==="big";
+  $("#ts-normal").setAttribute("aria-pressed",!big); $("#ts-big").setAttribute("aria-pressed",big); }
+function setText(big){ if(big) document.documentElement.setAttribute("data-text","big"); else document.documentElement.removeAttribute("data-text");
+  store("textsize",big?"big":"normal"); applyText(); }
+$("#ts-normal").onclick=()=>setText(false);
+$("#ts-big").onclick=()=>setText(true);
+applyText();
 
 /* radio groups: roving focus, arrow keys move and select */
 function radioKeys(group){
@@ -482,7 +603,7 @@ radioKeys(themeG);
 
 /* the three-way switch */
 const modeG=$("#mode");
-modeG.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ mode=b.dataset.mode; store("mode",mode); stampsShown=10; applyMode(); }; });
+modeG.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ mode=b.dataset.mode; store("mode",mode); stampsShown=10; sayStop(); applyMode(); }; });
 radioKeys(modeG);
 function applyMode(){
   modeG.querySelectorAll("button").forEach(b=>b.setAttribute("aria-checked",b.dataset.mode===mode));
@@ -494,7 +615,7 @@ function applyMode(){
 const tabs=[...document.querySelectorAll('[role="tab"]')];
 function selectTab(i){
   tabs.forEach((b,j)=>{ const on=i===j; b.setAttribute("aria-selected",on); b.tabIndex=on?0:-1; $("#"+b.getAttribute("aria-controls")).hidden=!on; });
-  store("tab",i); window.scrollTo({top:0});
+  sayStop(); store("tab",i); window.scrollTo({top:0});
   if(i===0) drawCoin();
 }
 tabs.forEach((b,i)=>{ b.onclick=()=>selectTab(i); b.onkeydown=e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const n=(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length; selectTab(n); tabs[n].focus(); } }; });
@@ -563,6 +684,9 @@ function setHero(c){
   $("#hero-name").textContent=cleanName(c.name);
   $("#hero-price").textContent="₹"+inr(c.price);
   $("#hero-meta").textContent=`${c.mint||""}${c.first_seen?`, ${t("listed").toLowerCase()} ${dateWords(c.first_seen)}`:""}`;
+  const pp=prevPrice(c), wasOn=pp&&pp.price!==pp.now;
+  $("#hero-was").hidden=!wasOn; $("#hero-was").textContent=wasOn?t("was")(inr(pp.price)):"";
+  $("#hero-say").innerHTML=sayBtn("hero:"+c.id,`${cleanName(c.name)}. ₹${inr(c.price)}. ${$("#hero-meta").textContent}`)+askLink(coinQ(c));
   $("#hero-buy").href=c.url;
   cv.setAttribute("aria-label",`${cleanName(c.name)}, ₹${inr(c.price)}`);
   if(heroId!==c.id){ heroId=c.id; img=null; if(c.image){ const i=new Image(); i.onload=()=>{ img=i; drawCoin(); }; i.src=c.image; } }
@@ -584,28 +708,53 @@ function setStamp(s){
 }
 function stampRow(s,first){
   const d=denom(s.denom);
-  return `<li class="srow"><p class="d${first?" newest":""}">${esc(dateWords(s.date)||s.date_text)}</p><div><p class="n">${esc(s.name)}</p><p class="v num">${esc(d.v)}${d.each?` ${esc(t("each"))}`:""}${first?`, <b>${esc(t("newWord").toLowerCase())}</b>`:""}</p></div></li>`;
+  const when=dateWords(s.date)||s.date_text||"", val=d.v+(d.each?` ${t("each")}`:"");
+  return `<li class="srow"><p class="d${first?" newest":""}">${esc(when)}</p><div><p class="n">${esc(s.name)}</p><p class="v num">${esc(d.v)}${d.each?` ${esc(t("each"))}`:""}${first?`, <b>${esc(t("newWord").toLowerCase())}</b>`:""}</p><div class="sayrow">${sayBtn("st:"+(s.n||"")+":"+s.name,`${s.name}. ${val}. ${when}`)}${askLink(`Tell me about the stamp: ${s.name} (${[s.date_text||s.date,d.v].filter(Boolean).join(", ")})`)}</div></div></li>`;
 }
 
 /* rows */
-function coinRow(c,fresh){
-  const m=marks[c.id]; const out=!c.in_stock;
+function coinRow(c,fresh,opt){
+  opt=opt||{}; const m=kindOf(c.id); const out=!c.in_stock, pp=prevPrice(c);
+  const sold=isInt(c.sold_2d)&&c.sold_2d>=1?c.sold_2d:null, left=stockN(c);
+  const soldLine=opt.fast&&sold!=null?`<p class="fast num">${esc(t("fastLine")(inr(sold),left==null?null:inr(left)))}</p>`
+    :sold!=null?`<p class="sold num">${esc(t("sold2")(inr(sold)))}</p>`:"";
+  const wasLine=pp?`<p class="was num">${esc(t("wasOn")(inr(pp.price),dateWords(pp.date)))}</p>`:"";
+  const chg=(opt.changes||[]).map(x=>`<p class="change num">${esc(x)}</p>`).join("");
   return `<li class="row" data-id="${esc(c.id)}">
     <img class="thumb" src="${esc(c.thumb||c.image||"")}" alt="" loading="lazy" width="78" height="78">
     <div>
       ${fresh?`<p class="new">${t("newWord")} ${dateWords(c.first_seen)}</p>`:""}
       <p class="name${fresh?" fresh":""}">${esc(cleanName(c.name))}</p>
       <p class="price num">₹${inr(c.price)}</p>
+      ${wasLine}
       <p class="meta${out?" out":""}">${esc(c.mint||"")}${c.stock?`, ${esc(c.stock.replace("in stock",t("inStock")))}`:(out?`, ${t("soldOut")}`:"")}</p>
+      ${soldLine}${chg}
       <div class="acts">
         <a href="${esc(c.url)}" target="_blank" rel="noopener">${t("buy")}</a>
         <button type="button" data-mark="have" aria-pressed="${m==="have"}">${t("haveIt")}</button>
         <button type="button" data-mark="want" aria-pressed="${m==="want"}">${t("wantIt")}</button>
+        ${askLink(coinQ(c))}
       </div>
     </div></li>`;
 }
 function newsRow(n){
-  return `<li class="nrow"><p class="src">${esc(n.source)}${n.date?`, ${esc(dateWords(n.date))}`:""}</p><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a></li>`;
+  const line=`${n.source||""}${n.date?`, ${dateWords(n.date)}`:""}`;
+  return `<li class="nrow"><p class="src">${esc(line)}</p><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a><div class="sayrow">${sayBtn("n:"+(n.link||n.title),`${n.title}. ${line}`)}${askLink(`Explain this news: ${n.title}`)}</div></li>`;
+}
+function showRow(x){
+  const when=dateWords(x.date)||x.date||"", where=[x.city,x.source].filter(Boolean).join(", ");
+  const title=x.link?`<a class="n" href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a>`:`<p class="n">${esc(x.title)}</p>`;
+  return `<li class="srow shrow"><p class="d">${esc(when)}</p><div>${title}${where?`<p class="where">${esc(where)}</p>`:""}<div class="sayrow">${sayBtn("sh:"+(x.link||x.title),`${x.title}. ${[when,where].filter(Boolean).join(", ")}`)}${askLink(`Tell me about this show: ${x.title}`)}</div></div></li>`;
+}
+/* what changed on a wanted coin since it was marked */
+function wantChanges(c){
+  const m=marks[c.id]; if(!m||m.kind!=="want") return [];
+  const out=[], now=stockN(c);
+  if(typeof m.price==="number"&&typeof c.price==="number"&&Math.round(m.price)!==Math.round(c.price)) out.push(t("repriced")(inr(m.price),inr(c.price)));
+  if(m.inStock===false&&c.in_stock) out.push(t("backIn"));
+  else if(m.inStock===true&&!c.in_stock) out.push(t("nowOut"));
+  else if(c.in_stock&&isInt(m.stock)&&isInt(now)&&now<m.stock) out.push(t("stockDown")(inr(m.stock),inr(now)));
+  return out;
 }
 function videoGroup(v){
   if(v.group) return v.group;
@@ -615,12 +764,16 @@ function videoGroup(v){
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-mark]"); if(!b) return;
   const id=b.closest(".row").dataset.id, kind=b.dataset.mark;
-  marks[id]=marks[id]===kind?undefined:kind; if(!marks[id]) delete marks[id];
+  if(kindOf(id)===kind) delete marks[id];
+  else{ const c=(data&&data.coins||[]).find(x=>String(x.id)===String(id))||{};
+    marks[id]={kind,price:typeof c.price==="number"?c.price:null,stock:stockN(c),inStock:typeof c.in_stock==="boolean"?c.in_stock:undefined}; }
   store("marks",marks); render();
   const again=document.querySelector(`.row[data-id="${CSS.escape(id)}"] [data-mark="${kind}"]`); if(again) again.focus();
 });
 
 function render(){
+  sayText.clear();
+  document.querySelectorAll(".askhint").forEach(a=>{ a.href="https://t.me/"+askBot(); });
   const coins=data.coins||[], week=Date.now()-7*864e5, C=showCoins(), S=showStamps();
   const stamps=Array.isArray(data.stamps)?data.stamps.filter(s=>s&&s.name):[];
   const yr=String(new Date().getFullYear()), yearStamps=stamps.filter(s=>(s.date||"").slice(0,4)===yr), list=yearStamps.length?yearStamps:stamps;
@@ -639,6 +792,11 @@ function render(){
   $("#home-coins").hidden=!C;
   if(C){
     if(coins[0]) setHero(coins[0]);
+    const byId=new Map(coins.map(c=>[String(c.id),c]));
+    const fast=(Array.isArray(data.selling_fast)?data.selling_fast:[]).map(id=>byId.get(String(id))).filter(Boolean).slice(0,6);
+    $("#fast").innerHTML=fast.map(c=>coinRow(c,false,{fast:true})).join("");
+    $("#fast-empty").hidden=fast.length>0;
+    $("#fast-empty").textContent=fast.length?"":t("fastNone")(data.history_since?dateWords(data.history_since):"");
     $("#fresh").innerHTML=fresh.slice(0,12).map(c=>coinRow(c,true)).join("");
     $("#fresh-empty").hidden=fresh.length>0;
     const mints=[""].concat((data.counts&&data.counts.mints)||[]);
@@ -669,6 +827,8 @@ function render(){
   // news
   const nc=(data.news||[]).filter(x=>x.group!=="stamps"), ns=(data.news||[]).filter(x=>x.group==="stamps");
   $("#news-coins-block").hidden=!C; $("#news-stamps-block").hidden=!S;
+  const shows=(Array.isArray(data.shows)?data.shows:[]).filter(x=>x&&x.title);
+  $("#shows").innerHTML=shows.map(showRow).join("")||`<li class="empty">${esc(t("noShows"))}</li>`;
   $("#news-coins").innerHTML=nc.map(newsRow).join("")||`<li class="empty">${t("noNews")}</li>`;
   $("#news-stamps").innerHTML=ns.map(newsRow).join("")||`<li class="empty">${t("noNews")}</li>`;
   // videos
@@ -677,10 +837,12 @@ function render(){
   $("#vidlist").innerHTML=vids.map(v=>`<li class="vrow"><a href="${esc(v.link)}" target="_blank" rel="noopener"><img src="${esc(v.thumb)}" alt="" loading="lazy" width="480" height="270"><p class="title">${esc(noEmoji(v.title))}</p><p class="src">${esc(v.channel)}${v.date?`, ${esc(dateWords(v.date))}`:""}</p></a></li>`).join("")||`<li class="empty">${t("noVideos")}</li>`;
   // album
   $("#album-coins").hidden=!C; $("#album-stamps-note").hidden=C;
-  const have=coins.filter(c=>marks[c.id]==="have"), want=coins.filter(c=>marks[c.id]==="want");
+  const have=coins.filter(c=>kindOf(c.id)==="have"), want=coins.filter(c=>kindOf(c.id)==="want");
+  const wch=new Map(want.map(c=>[c.id,wantChanges(c)])), nch=want.filter(c=>wch.get(c.id).length).length;
+  $("#want-changes").hidden=!nch; $("#want-changes").textContent=nch?t("changed")(nch):"";
   $("#have").innerHTML=have.map(c=>coinRow(c,false)).join(""); $("#have-empty").hidden=have.length>0;
   $("#have-total").textContent=have.length?t("total")(have.length,inr(have.reduce((s,c)=>s+c.price,0))):"";
-  $("#want").innerHTML=want.map(c=>coinRow(c,false)).join(""); $("#want-empty").hidden=want.length>0;
+  $("#want").innerHTML=want.map(c=>coinRow(c,false,{changes:wch.get(c.id)})).join(""); $("#want-empty").hidden=want.length>0;
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
   $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
 }
