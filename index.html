@@ -299,6 +299,12 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
           <ul class="rows" id="fast"></ul>
           <p class="fastnote" id="fast-empty" hidden></p>
         </section>
+    <section class="block" id="bookings-block">
+      <h2 data-t="bookings">Bookings now and upcoming</h2>
+      <p class="empty" id="bookings-note" data-t="bookingsNote">From the Numismatics Collections bookings list. You get a message when it changes.</p>
+      <ul class="rows" id="bookings"></ul>
+      <button type="button" class="more" id="bookings-more" data-t="bookingsMore" hidden>Show all bookings</button>
+    </section>
 
         <section class="block" aria-labelledby="h-fresh">
           <h2 id="h-fresh" data-t="fresh">New this week</h2>
@@ -444,7 +450,7 @@ const T={
      s_none:"Nothing new since you last looked.",s_first:n=>`<b>${n}</b> coins on the mint store today.`,
      s_stamp:(name,d)=>`Latest stamp: <b>${name}</b>, ${d}.`,
      total:(n,v)=>`${n} ${n===1?"coin":"coins"}, worth ₹${v} at mint price`,
-     mintSays:"The mint says:",vidCoins:"New videos on coins",vidStamps:"New videos on stamps",vidBoth:"New videos on coins and stamps",
+     mintSays:"The mint says:",bookings:"Bookings now and upcoming",bookingsNote:"From the Numismatics Collections bookings list. You get a message when it changes.",bookingsMore:"Show all bookings",bkOpen:"Booking open",bkUpcoming:"Not started yet",bkRelease:"released",bkDispatch:"dispatch",vidCoins:"New videos on coins",vidStamps:"New videos on stamps",vidBoth:"New videos on coins and stamps",
      videosNote:"Chosen channels only. Tap a picture to watch on YouTube.",noVideos:"No new videos for this choice yet.",
      noNews:"No news for this choice yet.",
      stampFig:(name,v,d)=>`Stamp: ${name}, ${v}, issued ${d}`,
@@ -476,7 +482,7 @@ const T={
      s_none:"पिछली बार के बाद कुछ नया नहीं।",s_first:n=>`आज मिंट स्टोर पर <b>${n}</b> सिक्के।`,
      s_stamp:(name,d)=>`नया डाक टिकट: <b>${name}</b>, ${d}।`,
      total:(n,v)=>`${n} सिक्के, मिंट दाम पर ₹${v}`,
-     mintSays:"मिंट की सूचना:",vidCoins:"सिक्कों पर नए वीडियो",vidStamps:"डाक टिकटों पर नए वीडियो",vidBoth:"सिक्कों और डाक टिकटों पर नए वीडियो",
+     mintSays:"मिंट की सूचना:",bookings:"बुकिंग: अभी और आगे",bookingsNote:"Numismatics Collections की बुकिंग सूची से। बदलाव होने पर आपको संदेश मिलेगा।",bookingsMore:"सभी बुकिंग दिखाएँ",bkOpen:"बुकिंग चालू",bkUpcoming:"अभी शुरू नहीं",bkRelease:"जारी",bkDispatch:"डिस्पैच",vidCoins:"सिक्कों पर नए वीडियो",vidStamps:"डाक टिकटों पर नए वीडियो",vidBoth:"सिक्कों और डाक टिकटों पर नए वीडियो",
      videosNote:"सिर्फ़ चुने हुए चैनल। तस्वीर दबाएँ, YouTube पर चलेगा।",noVideos:"इस चुनाव के लिए अभी कोई नया वीडियो नहीं।",
      noNews:"इस चुनाव के लिए अभी कोई खबर नहीं।",
      stampFig:(name,v,d)=>`डाक टिकट: ${name}, ${v}, ${d} को जारी`,
@@ -797,6 +803,12 @@ function render(){
     $("#fast").innerHTML=fast.map(c=>coinRow(c,false,{fast:true})).join("");
     $("#fast-empty").hidden=fast.length>0;
     $("#fast-empty").textContent=fast.length?"":t("fastNone")(data.history_since?dateWords(data.history_since):"");
+    const bks=Array.isArray(data.bookings)?data.bookings:[]; window.__bkAll=window.__bkAll||false;
+    const bkShow=window.__bkAll?bks:bks.slice(0,8);
+    $("#bookings").innerHTML=bkShow.map(b=>`<li class="row"><div><p class="new">${b.status==="open"?t("bkOpen"):(b.status==="upcoming"?t("bkUpcoming"):esc(b.booking))}</p><p class="name">${esc(b.theme)}</p><p class="meta">${esc(b.mint)}${b.release?`, ${t("bkRelease")} ${esc(b.release)}`:""}${b.status==="open"?`, ${esc(b.booking)}`:""}${b.dispatch&&b.dispatch!=="Not Applicable"?`, ${t("bkDispatch")} ${esc(b.dispatch)}`:""}</p></div></li>`).join("")||`<li class="empty">${t("freshEmpty")}</li>`;
+    $("#bookings-more").hidden=window.__bkAll||bks.length<=8;
+    $("#bookings-more").onclick=()=>{window.__bkAll=true;render();};
+    $("#bookings-note").innerHTML=data.bookings_url?`<a href="${esc(data.bookings_url)}" target="_blank" rel="noopener">${t("bookingsNote")}</a>`:t("bookingsNote");
     $("#fresh").innerHTML=fresh.slice(0,12).map(c=>coinRow(c,true)).join("");
     $("#fresh-empty").hidden=fresh.length>0;
     const mints=[""].concat((data.counts&&data.counts.mints)||[]);
