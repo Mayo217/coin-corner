@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Collector's Album</title>
 <meta name="description" content="New coins from the India Government Mint, this year's India Post stamps, coin and stamp news, and your own album.">
-<meta name="theme-color" content="#1B3A30">
+<meta name="theme-color" content="#4A1F28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,13 +16,40 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,400..800&family=Noto+Sans+Devanagari:wght@400;700&display=swap">
+<script>
+/* choose the tray before first paint: ?theme= overrides once, else the saved choice, else burgundy velvet */
+(function(){ var ok=["burgundy","midnight","walnut","slate","baize"], q=(new URLSearchParams(location.search).get("theme")||"").toLowerCase(), v=null;
+  try{ v=JSON.parse(localStorage.getItem("album.theme")); }catch(e){}
+  document.documentElement.setAttribute("data-theme", ok.indexOf(q)>=0?q:(ok.indexOf(v)>=0?v:"burgundy")); })();
+</script>
 <style>
-/* The collector's cabinet: green baize coin tray with brass fittings, and cream stamp-album pages laid on it. */
+/* The collector's cabinet: a dark tray (velvet, baize, walnut...) with metal fittings for coins, and cream stamp-album pages laid on it.
+   Themes change only the tray and its metal; the album paper is the same in every theme. Contrast on the tray, measured:
+   burgundy cream 11.6, gold #D4AF37 6.6, quiet 8.0 | midnight 12.1, #E0C068 8.1, quiet 8.1 | walnut 11.5, #D6B25E 6.8, quiet 7.5
+   slate 11.4, silver #C9CCD1 8.4, quiet 6.8 | baize 10.4, #C9A227 5.1, quiet 6.7 */
+:root, html[data-theme="burgundy"]{
+  --baize:#4A1F28; --baize-deep:#33151B; --brass:#D4AF37; --brass-soft:#ECD58E; --felt-quiet:#D6BFC2;
+  --metal-hi:#F7E7A8; --metal-lo:#6E5410; --metal-edge:#5A440C;
+}
+html[data-theme="midnight"]{
+  --baize:#1C2A44; --baize-deep:#121C30; --brass:#E0C068; --brass-soft:#EED9A0; --felt-quiet:#B9C3D3;
+  --metal-hi:#F8ECC0; --metal-lo:#7A6424; --metal-edge:#5E4C18;
+}
+html[data-theme="walnut"]{
+  --baize:#3B2A1E; --baize-deep:#2A1D14; --brass:#D6B25E; --brass-soft:#EBD49A; --felt-quiet:#CDBDA9;
+  --metal-hi:#F6E8B8; --metal-lo:#73592A; --metal-edge:#5A4520;
+}
+html[data-theme="slate"]{
+  --baize:#2B2F33; --baize-deep:#1E2225; --brass:#C9CCD1; --brass-soft:#E6E8EB; --felt-quiet:#B3B8BE;
+  --metal-hi:#F7F8FA; --metal-lo:#5C6168; --metal-edge:#474B51;
+}
+html[data-theme="baize"]{
+  --baize:#1B3A30; --baize-deep:#122A22; --brass:#C9A227; --brass-soft:#E7CF7A; --felt-quiet:#B4C2B2;
+  --metal-hi:#F6E6A6; --metal-lo:#6B5312; --metal-edge:#5E4A10;
+}
 :root{
-  --baize:#1B3A30; --baize-deep:#122A22; --brass:#C9A227; --brass-soft:#E7CF7A;
   --cream:#F4EBD3; --cream-deep:#E4D6B6; --ink:#1C1A16; --ink-soft:#5A5347; --post:#A63D2F;
   --cream-text-on-baize:#F4EBD3;
-  --felt-quiet:#B4C2B2;           /* secondary text on baize, 7:1 */
   --body:"Atkinson Hyperlegible","Noto Sans Devanagari",-apple-system,"Helvetica Neue",Arial,sans-serif;
   --display:"Fraunces","Noto Sans Devanagari",Georgia,"Times New Roman",serif;
   --tap:48px;
@@ -49,6 +76,15 @@ header.top h1{font-size:29px;font-weight:600;font-variation-settings:"opsz" 96;c
 .lang{display:flex;gap:2px;font-size:17px;flex-shrink:0}
 .lang button{padding:0 8px;min-height:var(--tap);color:var(--felt-quiet);font-weight:400}
 .lang button[aria-pressed="true"]{color:var(--cream);font-weight:700}
+
+/* tray colour: five discs of each material, the metal drawn as an inset ring; the chosen one is larger */
+.themes{display:flex;align-items:center;gap:0;margin:2px 0 0 -9px}
+.themes button{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%}
+.themes button span{display:block;width:24px;height:24px;border-radius:50%;background:var(--sw);
+  box-shadow:inset 0 0 0 3px var(--sm),0 2px 4px rgba(0,0,0,.45);transition:width .18s,height .18s}
+.themes button[aria-checked="true"] span{width:38px;height:38px;box-shadow:inset 0 0 0 5px var(--sm),0 3px 7px rgba(0,0,0,.5)}
+.themes .tname{margin-left:8px;font-size:17px;color:var(--felt-quiet)}
+@media (prefers-reduced-motion: reduce){ .themes button span{transition:none} }
 
 /* the three-way switch */
 .mode{display:grid;grid-template-columns:1fr 1fr 1fr;margin:10px 0 8px}
@@ -181,6 +217,14 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
     <button type="button" id="lang-hi" aria-pressed="false" lang="hi">हिंदी</button>
   </div>
 </header>
+<div class="themes" role="radiogroup" aria-label="Tray colour" id="themes">
+  <button type="button" role="radio" data-theme="burgundy" aria-checked="false" style="--sw:#4A1F28;--sm:#D4AF37"><span></span></button>
+  <button type="button" role="radio" data-theme="midnight" aria-checked="false" style="--sw:#1C2A44;--sm:#E0C068"><span></span></button>
+  <button type="button" role="radio" data-theme="walnut" aria-checked="false" style="--sw:#3B2A1E;--sm:#D6B25E"><span></span></button>
+  <button type="button" role="radio" data-theme="slate" aria-checked="false" style="--sw:#2B2F33;--sm:#C9CCD1"><span></span></button>
+  <button type="button" role="radio" data-theme="baize" aria-checked="false" style="--sw:#1B3A30;--sm:#C9A227"><span></span></button>
+  <span class="tname" id="tname" aria-hidden="true"></span>
+</div>
 <div class="mode" role="radiogroup" aria-label="Show" id="mode">
   <button type="button" role="radio" data-mode="coins" aria-checked="false" data-t="mCoins">Coins</button>
   <button type="button" role="radio" data-mode="both" aria-checked="true" data-t="mBoth">Both</button>
@@ -376,12 +420,13 @@ const T={
      offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट देखें, फिर एल्बम दोबारा खोलें।"}
 };
 function store(k,v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("album."+k)); localStorage.setItem("album."+k,JSON.stringify(v)); }catch(e){ return null; } }
-const urlMode=(new URLSearchParams(location.search).get("mode")||"").toLowerCase();
-let lang=store("lang")||"en", data=null, mint="", query="", shown=20, stampsShown=10;
+const urlQ=new URLSearchParams(location.search), urlMode=(urlQ.get("mode")||"").toLowerCase(), urlLang=(urlQ.get("lang")||"").toLowerCase();
+let lang=["en","hi"].includes(urlLang)?urlLang:(store("lang")||"en"), data=null, mint="", query="", shown=20, stampsShown=10;
 let mode=["coins","both","stamps"].includes(urlMode)?urlMode:(store("mode")||"both");
 const marks=store("marks")||{};   // id -> "have" | "want"
 
 const t=k=>T[lang][k];
+let coinReady=false;
 const inr=v=>Math.round(v).toLocaleString("en-IN");
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function dateWords(iso){ if(!iso) return ""; const d=new Date(iso+"T00:00:00"); if(isNaN(d)) return ""; return d.toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{day:"numeric",month:"short"}); }
@@ -400,6 +445,7 @@ function applyLang(){
   document.querySelectorAll("[data-p]").forEach(el=>{ el.placeholder=t(el.dataset.p); });
   $("#lang-en").setAttribute("aria-pressed",lang==="en"); $("#lang-hi").setAttribute("aria-pressed",lang==="hi");
   $("#mode").setAttribute("aria-label",lang==="hi"?"क्या दिखाएँ":"Show");
+  applyTheme();
   if(data) render(); else $("#status").textContent=lang==="hi"?"एल्बम खुल रहा है।":"Loading the album.";
 }
 $("#lang-en").onclick=()=>{lang="en";store("lang",lang);applyLang();};
@@ -416,6 +462,23 @@ function radioKeys(group){
   });
 }
 function syncRadios(group){ group.querySelectorAll('[role="radio"]').forEach(b=>{ b.tabIndex=b.getAttribute("aria-checked")==="true"?0:-1; }); }
+
+/* tray colour themes: only the tray and metal tokens change; the album paper stays the same */
+const THEMES={burgundy:{en:"Burgundy velvet",hi:"बरगंडी"},midnight:{en:"Midnight blue",hi:"नीला"},walnut:{en:"Walnut",hi:"भूरा"},slate:{en:"Slate grey",hi:"ग्रे"},baize:{en:"Green baize",hi:"हरा"}};
+const themeG=$("#themes");
+let theme=document.documentElement.getAttribute("data-theme"); if(!THEMES[theme]) theme="burgundy";
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme",theme);
+  themeG.setAttribute("aria-label",lang==="hi"?"ट्रे का रंग":"Tray colour");
+  themeG.querySelectorAll("button").forEach(b=>{ b.setAttribute("aria-checked",b.dataset.theme===theme); b.setAttribute("aria-label",THEMES[b.dataset.theme][lang]); });
+  syncRadios(themeG);
+  $("#tname").textContent=THEMES[theme][lang];
+  const tray=getComputedStyle(document.documentElement).getPropertyValue("--baize").trim();
+  const meta=document.querySelector('meta[name="theme-color"]'); if(meta&&tray) meta.setAttribute("content",tray);
+  if(coinReady) drawCoin();
+}
+themeG.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ theme=b.dataset.theme; store("theme",theme); applyTheme(); }; });
+radioKeys(themeG);
 
 /* the three-way switch */
 const modeG=$("#mode");
@@ -441,23 +504,26 @@ window.addEventListener("hashchange",()=>{ if(HASH[location.hash]!==undefined) s
 /* the coin: image struck into a brass disc lying on the felt; the shine and its shadow follow the tilt */
 const cv=$("#coin"), cx=cv.getContext("2d"), reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let img=null, light={x:-0.4,y:-0.5}, target={x:-0.4,y:-0.5}, raf=0;
+function tok(n,fb){ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return /^#[0-9a-f]{6}$/i.test(v)?v:fb; }
+function rgb(h){ return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(","); }
 function drawCoin(){
+  const M={brass:tok("--brass","#C9A227"),soft:tok("--brass-soft","#E7CF7A"),hi:tok("--metal-hi","#F6E6A6"),lo:tok("--metal-lo","#6B5312"),edge:tok("--metal-edge","#5E4A10")};
   const S=cv.width, H=cv.height, c=S/2, cy=S*0.43, r=S*0.40;
   cx.clearRect(0,0,S,H);
   // felt shadow: a soft dark ellipse, pushed away from the light
   cx.save(); cx.translate(c-light.x*r*0.14, cy+r*0.97); cx.scale(1,0.16);
   const sh=cx.createRadialGradient(0,0,0,0,0,r*0.98);
-  sh.addColorStop(0,"rgba(5,14,10,0.62)"); sh.addColorStop(0.6,"rgba(5,14,10,0.3)"); sh.addColorStop(1,"rgba(5,14,10,0)");
+  sh.addColorStop(0,"rgba(0,0,0,0.6)"); sh.addColorStop(0.6,"rgba(0,0,0,0.28)"); sh.addColorStop(1,"rgba(0,0,0,0)");
   cx.fillStyle=sh; cx.beginPath(); cx.arc(0,0,r*0.98,0,Math.PI*2); cx.fill(); cx.restore();
   // reeded edge
   cx.save(); cx.translate(c,cy);
   const la=Math.atan2(light.y,light.x);
-  cx.fillStyle="#5E4A10"; cx.beginPath(); cx.arc(0,0,r,0,Math.PI*2); cx.fill();
-  for(let i=0;i<170;i++){ const a=i/170*Math.PI*2; const s=0.5+0.5*Math.cos(a-la); cx.strokeStyle=`rgba(231,207,122,${(0.25+0.65*s).toFixed(2)})`; cx.lineWidth=S*0.0055; cx.beginPath(); cx.moveTo(Math.cos(a)*r*0.962,Math.sin(a)*r*0.962); cx.lineTo(Math.cos(a)*r*0.995,Math.sin(a)*r*0.995); cx.stroke(); }
+  cx.fillStyle=M.edge; cx.beginPath(); cx.arc(0,0,r,0,Math.PI*2); cx.fill();
+  for(let i=0;i<170;i++){ const a=i/170*Math.PI*2; const s=0.5+0.5*Math.cos(a-la); cx.strokeStyle=`rgba(${rgb(M.soft)},${(0.25+0.65*s).toFixed(2)})`; cx.lineWidth=S*0.0055; cx.beginPath(); cx.moveTo(Math.cos(a)*r*0.962,Math.sin(a)*r*0.962); cx.lineTo(Math.cos(a)*r*0.995,Math.sin(a)*r*0.995); cx.stroke(); }
   cx.restore();
-  // brass rim
+  // metal rim (brass, gold or silver with the theme)
   const rim=cx.createLinearGradient(c+light.x*r,cy+light.y*r,c-light.x*r,cy-light.y*r);
-  rim.addColorStop(0,"#F6E6A6"); rim.addColorStop(0.35,"#E7CF7A"); rim.addColorStop(0.62,"#C9A227"); rim.addColorStop(1,"#6B5312");
+  rim.addColorStop(0,M.hi); rim.addColorStop(0.35,M.soft); rim.addColorStop(0.62,M.brass); rim.addColorStop(1,M.lo);
   cx.fillStyle=rim; cx.beginPath(); cx.arc(c,cy,r*0.955,0,Math.PI*2); cx.fill();
   // field
   cx.save(); cx.beginPath(); cx.arc(c,cy,r*0.85,0,Math.PI*2); cx.clip();
@@ -472,8 +538,9 @@ function drawCoin(){
   cx.fillStyle=band; cx.fillRect(0,0,S,S);
   cx.restore();
   // inner rim shadow, so the field sits below the rim
-  cx.save(); cx.beginPath(); cx.arc(c,cy,r*0.85,0,Math.PI*2); cx.lineWidth=S*0.008; cx.strokeStyle="rgba(70,52,10,0.55)"; cx.stroke(); cx.restore();
+  cx.save(); cx.beginPath(); cx.arc(c,cy,r*0.85,0,Math.PI*2); cx.lineWidth=S*0.008; cx.strokeStyle=`rgba(${rgb(M.lo)},0.7)`; cx.stroke(); cx.restore();
 }
+coinReady=true;
 function tick(){
   raf=0;
   light.x+=(target.x-light.x)*0.12; light.y+=(target.y-light.y)*0.12;
@@ -630,7 +697,7 @@ async function load(){
     setTimeout(()=>store("lastVisit",new Date().toISOString().slice(0,10)),4000);
   }catch(err){ if(!data){ $("#status").textContent=""; $("#error").textContent=t("offline"); $("#error").hidden=false; } }
 }
-applyLang(); applyMode();
+applyLang(); applyMode(); applyTheme();
 const hashTab=HASH[location.hash];
 selectTab(hashTab!==undefined?hashTab:(store("tab")||0)); load();
 })();
