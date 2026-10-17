@@ -49,6 +49,8 @@ header.top h1{font-size:30px}
 .status{font-size:22px;line-height:1.3;margin:4px 0 14px;color:var(--ink)}
 .status b{color:var(--gold-deep);font-family:var(--display);font-weight:700}
 .status.quiet{color:var(--ink-soft)}
+.notice{font-size:18px;line-height:1.4;margin:0 0 14px;padding-left:14px;box-shadow:inset 3px 0 0 var(--gold)}
+.notice .lbl{color:var(--gold-deep);font-weight:700}
 
 /* the coin in hand */
 .hero{position:relative;margin:0 -16px;background:var(--paper-deep);padding:18px 16px 20px}
@@ -89,6 +91,13 @@ section.block h2{font-size:21px;color:var(--ink-soft);font-weight:500;margin-bot
 .news .title{font-size:20px;line-height:1.3;text-decoration:none;display:block;font-family:var(--display);font-weight:500}
 .news .title:active{color:var(--gold-deep)}
 .empty{color:var(--ink-soft);padding:14px 0 28px;font-size:18px}
+.videos .empty{padding:0 0 6px;font-size:16px}
+.videos .row{grid-template-columns:1fr}
+.videos a.v{display:block;text-decoration:none}
+.videos a.v img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:var(--paper-deep);display:block}
+.videos .title{font-family:var(--display);font-weight:500;font-size:20px;line-height:1.3;margin-top:8px}
+.videos .src{color:var(--ink-faint);font-size:16px;margin-top:2px}
+nav.tabs button{font-size:16px}
 .total{font-size:20px;margin:4px 0 2px}
 
 footer{color:var(--ink-faint);font-size:15px;padding:30px 0 10px;line-height:1.5}
@@ -117,6 +126,7 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
 <main id="main">
   <p class="status" id="status" aria-live="polite">Loading the album…</p>
   <div id="error" class="error" hidden></div>
+  <div id="notices" hidden></div>
 
   <section id="panel-coins" role="tabpanel" aria-labelledby="tab-coins">
     <div class="hero" id="hero" hidden>
@@ -156,6 +166,14 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
     </section>
   </section>
 
+  <section id="panel-videos" role="tabpanel" aria-labelledby="tab-videos" hidden>
+    <section class="block videos">
+      <h2 data-t="videos">New videos on coins and stamps</h2>
+      <p class="empty" id="videos-note" data-t="videosNote">Chosen channels only. Tap a picture to watch on YouTube.</p>
+      <ul class="rows" id="videos"></ul>
+    </section>
+  </section>
+
   <section id="panel-album" role="tabpanel" aria-labelledby="tab-album" hidden>
     <section class="block">
       <h2 data-t="have">Coins I have</h2>
@@ -182,6 +200,7 @@ nav.tabs button .hi{font-size:14px;font-weight:400}
 <nav class="tabs" role="tablist" aria-label="Sections">
   <button role="tab" id="tab-coins" aria-selected="true" aria-controls="panel-coins"><span data-t="tabCoins">Coins</span><span class="hi" lang="hi">सिक्के</span></button>
   <button role="tab" id="tab-news" aria-selected="false" aria-controls="panel-news" tabindex="-1"><span data-t="tabNews">News</span><span class="hi" lang="hi">खबरें</span></button>
+  <button role="tab" id="tab-videos" aria-selected="false" aria-controls="panel-videos" tabindex="-1"><span data-t="tabVideos">Videos</span><span class="hi" lang="hi">वीडियो</span></button>
   <button role="tab" id="tab-album" aria-selected="false" aria-controls="panel-album" tabindex="-1"><span data-t="tabAlbum">My album</span><span class="hi" lang="hi">मेरा एल्बम</span></button>
 </nav>
 
@@ -201,7 +220,8 @@ const T={
      listed:"Listed",updated:"Updated",newest:"Newest on the mint store",
      s_new:n=>`<b>${n}</b> new ${n===1?"coin":"coins"} since you last looked.`,
      s_none:"Nothing new since you last looked.",s_first:n=>`<b>${n}</b> coins on the mint store today.`,
-     total:(n,v)=>`${n} ${n===1?"coin":"coins"}, worth ₹${v} at mint price`,offline:"Could not load the latest list. Showing nothing until the connection is back."},
+     total:(n,v)=>`${n} ${n===1?"coin":"coins"}, worth ₹${v} at mint price`,
+     mintSays:"The mint says:",videos:"New videos on coins and stamps",videosNote:"Chosen channels only. Tap a picture to watch on YouTube.",tabVideos:"Videos",offline:"Could not load the latest list. Showing nothing until the connection is back."},
  hi:{title:"सिक्का एल्बम",buy:"मिंट की साइट पर खरीदें",tilt:"चमक देखने के लिए फ़ोन झुकाएँ",fresh:"इस हफ़्ते नया",
      freshEmpty:"इस हफ़्ते कोई नया सिक्का नहीं। मिंट महीने में कुछ ही सिक्के निकालता है।",all:"मिंट स्टोर के सभी सिक्के",
      more:"और सिक्के दिखाएँ",coinNews:"सिक्कों की खबरें",stampNews:"डाक टिकट की खबरें और स्टैम्प क्लब",have:"मेरे पास जो सिक्के हैं",
@@ -213,7 +233,8 @@ const T={
      listed:"सूची में आया",updated:"अपडेट",newest:"मिंट स्टोर पर सबसे नया",
      s_new:n=>`पिछली बार के बाद <b>${n}</b> ${n===1?"नया सिक्का":"नए सिक्के"}।`,
      s_none:"पिछली बार के बाद कुछ नया नहीं।",s_first:n=>`आज मिंट स्टोर पर <b>${n}</b> सिक्के।`,
-     total:(n,v)=>`${n} सिक्के, मिंट दाम पर ₹${v}`,offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट आने पर फिर खुलेगी।"}
+     total:(n,v)=>`${n} सिक्के, मिंट दाम पर ₹${v}`,
+     mintSays:"मिंट की सूचना:",videos:"सिक्कों और डाक टिकटों पर नए वीडियो",videosNote:"सिर्फ़ चुने हुए चैनल। तस्वीर दबाएँ, YouTube पर चलेगा।",tabVideos:"वीडियो",offline:"ताज़ा सूची नहीं मिल सकी। इंटरनेट आने पर फिर खुलेगी।"}
 };
 let lang=store("lang")||"en", data=null, mint="", query="", shown=20;
 const marks=store("marks")||{};   // id -> "have" | "want"
@@ -334,6 +355,8 @@ function render(){
   let n=last?coins.filter(c=>c.first_seen>last).length:0;
   $("#status").innerHTML= !last||seeded ? t("s_first")(coins.length) : (n?t("s_new")(n):t("s_none"));
   $("#status").classList.toggle("quiet",!!last&&!n&&!seeded);
+  const nts=data.notices||[]; $("#notices").hidden=!nts.length;
+  $("#notices").innerHTML=nts.map(n=>`<p class="notice"><span class="lbl">${t("mintSays")}</span> ${esc(n)}</p>`).join("");
   if(coins[0]) setHero(coins[0]);
   $("#fresh").innerHTML=fresh.slice(0,12).map(c=>coinRow(c,true)).join("");
   $("#fresh-empty").hidden=fresh.length>0;
@@ -349,6 +372,8 @@ function render(){
   const nc=data.news.filter(n=>n.group==="coins"), ns=data.news.filter(n=>n.group==="stamps");
   $("#news-coins").innerHTML=nc.map(newsRow).join("")||`<li class="empty">${t("freshEmpty")}</li>`;
   $("#news-stamps").innerHTML=ns.map(newsRow).join("");
+  // videos
+  $("#videos").innerHTML=(data.videos||[]).map(v=>`<li class="row"><a class="v" href="${esc(v.link)}" target="_blank" rel="noopener"><img src="${esc(v.thumb)}" alt="" loading="lazy"><p class="title">${esc(v.title)}</p><p class="src">${esc(v.channel)}${v.date?`, ${dateWords(v.date)}`:""}</p></a></li>`).join("")||`<li class="empty">${t("freshEmpty")}</li>`;
   // album
   const have=coins.filter(c=>marks[c.id]==="have"), want=coins.filter(c=>marks[c.id]==="want");
   $("#have").innerHTML=have.map(c=>coinRow(c,false)).join(""); $("#have-empty").hidden=have.length>0;
