@@ -393,7 +393,8 @@ async function load(){
     setTimeout(()=>store("lastVisit",new Date().toISOString().slice(0,10)),4000);
   }catch(err){ if(!data){ $("#status").textContent=""; $("#error").textContent=t("offline"); $("#error").hidden=false; } }
 }
-applyLang(); selectTab(store("tab")||0); load();
+const hashTab={"#coins":0,"#news":1,"#videos":2,"#album":3}[location.hash];
+applyLang(); selectTab(hashTab!==undefined?hashTab:(store("tab")||0)); load();
 })();
 </script>
 </body>
