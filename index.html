@@ -254,6 +254,8 @@ section.block > h2, .page h2{font-size:1.5625rem;margin-bottom:4px;font-variatio
 .page .seg button[aria-checked="true"]{color:var(--ink);font-weight:700}
 .page .search{background:var(--cream-deep);color:var(--ink)}
 .page .search::placeholder{color:var(--ink-soft)}
+.jump{margin:4px 0 18px;font-size:1.125rem;color:var(--ink)}
+.jump button{font:inherit;color:inherit;background:none;border:0;padding:10px 0;min-height:44px;cursor:pointer;font-weight:600}
 .osum{font-size:1.3125rem;line-height:1.42;margin:8px 0 2px;color:var(--ink)}
 .osum b{font-family:var(--display);font-weight:700;font-variant-numeric:lining-nums tabular-nums}
 .orders h3{font-family:var(--display);font-weight:600;font-size:1.375rem;margin:28px 0 0;font-variation-settings:"opsz" 60}
@@ -447,21 +449,7 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
       <div class="wrap">
         <p class="lead" id="album-stamps-note" hidden data-t="albumStamps">Your album keeps coins for now. Choose Coins or Both above to see them.</p>
         <div id="album-coins">
-          <section class="orders coll" id="coll-block" aria-labelledby="h-coll" hidden>
-            <h2 id="h-coll" data-t="collH">All my coins</h2>
-            <p class="osum" id="csum" aria-live="polite"></p>
-            <label for="cq" class="skip" data-t="cSearchLbl">Search all my coins</label>
-            <input class="search" id="cq" type="search" autocomplete="off" data-p="cSearch" placeholder="Search a coin, year or denomination">
-            <p class="ctl" id="cfilt-l" data-t="oShowL">Show</p>
-            <div class="seg" role="radiogroup" aria-labelledby="cfilt-l" id="cfilt"></div>
-            <p class="ctl" id="csort-l" data-t="oSortL">Arrange</p>
-            <div class="seg" role="radiogroup" aria-labelledby="csort-l" id="csort"></div>
-            <p class="cfound" id="cfound" aria-live="polite"></p>
-            <ul class="rows" id="clist"></ul>
-            <button type="button" class="more" id="cmore" data-t="cMore">Show more coins</button>
-            <h3 id="h-rep" data-t="repH">Replica sets</h3>
-            <ul class="rows" id="crep"></ul>
-          </section>
+          <p class="jump" id="album-jump" hidden><button type="button" data-go="h-orders" data-t="ordersH">My orders from the Mint</button><span aria-hidden="true"> · </span><button type="button" data-go="h-coll" data-t="collH">All my coins</button></p>
           <section class="orders" id="orders-block" aria-labelledby="h-orders" hidden>
             <h2 id="h-orders" data-t="ordersH">My orders from the Mint</h2>
             <div class="seg" role="radiogroup" aria-label="Whose orders" id="oacct"></div>
@@ -479,6 +467,21 @@ nav.tabs button .hi{font-size:0.875rem;font-weight:400}
             <div class="seg" role="radiogroup" aria-labelledby="osort-l" id="osort"></div>
             <ul class="rows" id="olist"></ul>
             <button type="button" class="more" id="omore" data-t="oMore">Show more orders</button>
+          </section>
+          <section class="orders coll" id="coll-block" aria-labelledby="h-coll" hidden>
+            <h2 id="h-coll" data-t="collH">All my coins</h2>
+            <p class="osum" id="csum" aria-live="polite"></p>
+            <label for="cq" class="skip" data-t="cSearchLbl">Search all my coins</label>
+            <input class="search" id="cq" type="search" autocomplete="off" data-p="cSearch" placeholder="Search a coin, year or denomination">
+            <p class="ctl" id="cfilt-l" data-t="oShowL">Show</p>
+            <div class="seg" role="radiogroup" aria-labelledby="cfilt-l" id="cfilt"></div>
+            <p class="ctl" id="csort-l" data-t="oSortL">Arrange</p>
+            <div class="seg" role="radiogroup" aria-labelledby="csort-l" id="csort"></div>
+            <p class="cfound" id="cfound" aria-live="polite"></p>
+            <ul class="rows" id="clist"></ul>
+            <button type="button" class="more" id="cmore" data-t="cMore">Show more coins</button>
+            <h3 id="h-rep" data-t="repH">Replica sets</h3>
+            <ul class="rows" id="crep"></ul>
           </section>
           <p class="changes" id="want-changes" hidden></p>
           <section aria-labelledby="h-have">
@@ -987,7 +990,7 @@ function render(){
   $("#have-extra").innerHTML=extra.map(id=>{ const m=marks[id]; return `<li class="srow extra"><p class="d"></p><div><p class="n">${esc(m.name)}</p><p class="v num">${typeof m.price==="number"?"₹"+inr(m.price)+", ":""}${esc(t("oFromOrders").toLowerCase())}</p><button type="button" data-unmark="${esc(id)}">${esc(t("oRemove"))}</button></div></li>`; }).join("");
   const hn=have.length+extra.length, hv=have.reduce((s,c)=>s+c.price,0)+extra.reduce((s,id)=>s+(typeof marks[id].price==="number"?marks[id].price:0),0);
   $("#have-total").textContent=hn?t("total")(hn,inr(hv)):"";
-  renderColl(); renderOrders();
+  renderColl(); renderOrders(); $("#album-jump").hidden=$("#orders-block").hidden||$("#coll-block").hidden;
   $("#want").innerHTML=want.map(c=>coinRow(c,false,{changes:wch.get(c.id)})).join(""); $("#want-empty").hidden=want.length>0;
   $("#want-total").textContent=want.length?t("total")(want.length,inr(want.reduce((s,c)=>s+c.price,0))):"";
   $("#updated").textContent=`${t("updated")} ${data.generated||""}`;
@@ -1134,6 +1137,7 @@ function onCSeg(el,fn){ el.addEventListener("click",e=>{ const b=e.target.closes
 onCSeg($("#cfilt"),v=>{ cFilter=v; });
 onCSeg($("#csort"),v=>{ cSort=v; store("collSort",v); });
 $("#cq").oninput=e=>{ cQuery=e.target.value; cShown=40; renderColl(); };
+document.querySelectorAll("#album-jump [data-go]").forEach(b=>b.onclick=()=>{ const h=document.getElementById(b.dataset.go); h.tabIndex=-1; h.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); h.focus({preventScroll:true}); });
 $("#cmore").onclick=()=>{ cShown+=40; renderColl(); };
 function onSeg(el,fn){ el.addEventListener("click",e=>{ const b=e.target.closest('[role="radio"]'); if(!b) return; fn(b.dataset.v); oShown=40; render();
   const again=el.querySelector(`[data-v="${CSS.escape(b.dataset.v)}"]`); if(again) again.focus(); }); radioKeys(el); }
